@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f3f0">
+<meta property="og:title" content="Each Pixel Matters">
+<meta property="og:description" content="A small independent game studio. Our first game is iNardi, Armenian nardi for your phone.">
+<title>Each Pixel Matters</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Each Pixel Matters is a small independent game studio making mobile games that feel like hand-made toys. Our first game is iNardi, Armenian nardi for your phone.">
+<link rel="icon" type="image/svg+xml" href="img/epm-mark-navy.svg">
+<link rel="preload" href="fonts/fredoka-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+/* Layout: a light toy-box page. The hero logo is built from 3D cubes; games, studio and contact sit in bold colour blocks with a few stray cubes around them. */
+:root {
+  --paper: #f5f3f0;    /* page */
+  --navy: #1c1f55;     /* ink, the logo */
+  --ink-2: #4b4e72;    /* secondary text */
+  --yellow: #ffc533;
+  --coral: #f4725f;
+  --teal: #33c1b0;
+  --blue: #4b5bd1;
+  --purple: #9a6be0;
+  --gold: #f2c14e;     /* the one gold pixel */
+  --display: "Fredoka", "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  --body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --r-big: 28px; --r: 18px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--paper); color: var(--navy); font: 500 1.0625rem/1.6 var(--body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 8px; }
+.wrap { position: relative; max-width: 74rem; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+
+/* a stray isometric cube; colour comes from --c */
+.cube { position: absolute; width: var(--s, 18px); height: auto; pointer-events: none; }
+.cube { --ft: color-mix(in srgb, var(--c) 70%, white); --fl: var(--c); --fr: color-mix(in srgb, var(--c) 72%, black); }
+
+/* header */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: color-mix(in srgb, var(--paper) 90%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 76px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font: 600 1.05rem/1.05 var(--display); }
+.brand svg { width: 44px; height: auto; flex: none; }
+.nav { display: flex; gap: 10px; }
+.nav a { text-decoration: none; font: 600 .98rem/1 var(--display); padding: 11px 18px; border-radius: 999px; transition: transform .15s; }
+.nav a:hover { transform: translateY(-2px); }
+.nav a:nth-child(1) { background: #ffe8a6; }
+.nav a:nth-child(2) { background: #c8eeea; }
+.nav a:nth-child(3) { background: #fdd3cb; }
+
+/* hero */
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: center; padding-block: clamp(24px, 5vw, 56px) clamp(32px, 6vw, 72px); }
+h1 { font-size: clamp(2.7rem, 6.4vw, 4.6rem); line-height: 1.02; letter-spacing: -.01em; }
+.lede { margin-top: 1.1rem; max-width: 30rem; font-size: 1.15rem; color: var(--ink-2); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1.8rem; }
+.btn { display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; border-radius: 999px; text-decoration: none; font: 600 1.05rem/1 var(--display); border: 2.5px solid var(--navy); transition: transform .15s, box-shadow .15s; }
+.btn:hover { transform: translateY(-2px); }
+.btn.yellow { background: var(--yellow); border-color: var(--yellow); box-shadow: 0 5px 0 #e0a514; }
+.btn.yellow:hover { box-shadow: 0 7px 0 #e0a514; }
+.btn.outline { background: #fff; }
+.stage { position: relative; aspect-ratio: 1 / .86; max-width: 100%; }
+#voxels { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; touch-action: manipulation; }
+.stage .tip { position: absolute; left: 0; right: 0; bottom: -4px; text-align: center; font-size: .85rem; color: var(--ink-2); opacity: .75; }
+
+/* sections */
+section.block { padding-block: clamp(48px, 8vw, 96px); }
+h2 { font-size: clamp(2.1rem, 4.6vw, 3.2rem); line-height: 1.05; margin-bottom: clamp(22px, 4vw, 36px); }
+
+/* games */
+.games { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 20px; }
+.card { position: relative; border-radius: var(--r-big); overflow: hidden; }
+.inardi { background: var(--coral); color: #fff; padding: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 12px; min-height: 420px; }
+.inardi::before { content: ""; position: absolute; right: -90px; bottom: -120px; width: 420px; height: 420px; border-radius: 50%; background: var(--navy); }
+.inardi::after { content: ""; position: absolute; top: 0; right: 0; width: 84px; height: 84px; background: var(--navy);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 66% 100%, 66% 66%, 33% 66%, 33% 33%, 0 33%); }
+.inardi .txt { position: relative; z-index: 1; display: flex; flex-direction: column; min-width: 0; }
+.inardi .logo { width: min(230px, 80%); height: auto; filter: drop-shadow(0 3px 0 rgba(90,30,10,.35)); margin-left: -4px; }
+.inardi h3 { font-size: 1.45rem; line-height: 1.2; margin-top: 8px; }
+.inardi .desc { margin-top: 10px; max-width: 26rem; color: #fff3ef; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.chips span { background: rgba(255,255,255,.2); border-radius: 999px; padding: 5px 12px; font-size: .9rem; font-weight: 700; }
+.inardi .actions { margin-top: auto; padding-top: 22px; }
+.inardi .btn.yellow { color: var(--navy); }
+.phones { position: relative; z-index: 1; min-height: 340px; }
+.phones img { position: absolute; width: 56%; height: auto; aspect-ratio: 585 / 1266; object-fit: cover; border-radius: 20px; border: 4px solid #121433; box-shadow: 0 18px 30px rgba(28,31,85,.35); }
+.phones .a { left: 2%; top: 12%; transform: rotate(-8deg); }
+.phones .b { right: 0; top: 0; transform: rotate(6deg); }
+.soon { position: absolute; z-index: 2; right: 14px; bottom: 14px; display: flex; align-items: center; gap: 8px; background: #000; color: #fff; border-radius: 10px; padding: 7px 12px; font: 700 .78rem/1.15 var(--body); }
+.soon svg { width: 18px; height: 18px; }
+.soon small { display: block; font-weight: 600; font-size: .66rem; opacity: .8; }
+
+.next { background: var(--navy); color: #fff; display: flex; flex-direction: column; min-height: 420px; }
+.next h3 { font-size: 2rem; line-height: 1.05; text-align: center; padding: 30px 24px 0; }
+.next canvas { flex: 1; width: 100%; min-height: 200px; }
+.next .base { position: relative; background: var(--teal); padding: 30px 20px 26px; text-align: center; font-weight: 700; }
+.next .base::before { content: ""; position: absolute; left: 0; right: 0; top: -24px; height: 25px; background: var(--teal);
+  clip-path: polygon(0 100%, 0 0, 16% 0, 16% 50%, 72% 50%, 72% 0, 84% 0, 84% 50%, 100% 50%, 100% 100%); }
+
+/* studio */
+.studio { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.4fr); gap: clamp(24px, 4vw, 48px); align-items: center; }
+.studio .about p { color: var(--ink-2); max-width: 30rem; font-size: 1.1rem; }
+.studio .about p + p { margin-top: .9rem; }
+.studio h2 { margin-bottom: 18px; }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.tile { border-radius: var(--r); padding: 22px 16px 20px; color: #fff; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 6px 0 rgba(28,31,85,.12); }
+.tile svg { width: 64px; height: 64px; image-rendering: pixelated; }
+.tile b { font: 600 1.25rem/1.1 var(--display); }
+.tile span { font-size: .92rem; font-weight: 600; opacity: .92; line-height: 1.4; }
+.tile:nth-child(1) { background: var(--coral); }
+.tile:nth-child(2) { background: var(--teal); }
+.tile:nth-child(3) { background: var(--blue); }
+
+/* contact */
+.hello { position: relative; background: var(--yellow); border-radius: var(--r-big); padding: clamp(36px, 6vw, 64px) 24px; text-align: center; }
+.hello h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 10px; }
+.hello .mail { display: inline-block; font: 600 clamp(1.45rem, 5vw, 3.4rem)/1.1 var(--display); text-decoration: none; overflow-wrap: anywhere; }
+.hello .mail:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+.hello p { margin: 14px auto 0; max-width: 32rem; color: #5a4512; font-weight: 600; }
+.copy-btn { margin-top: 18px; font: 600 1rem/1 var(--display); color: var(--navy); background: #fff; border: 2.5px solid var(--navy); border-radius: 999px; min-height: 46px; padding: 0 22px; cursor: pointer; }
+
+footer { padding-block: 34px calc(34px + env(safe-area-inset-bottom, 0px)); font-size: .95rem; color: var(--ink-2); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 26px; }
+footer a { text-decoration: none; font-weight: 700; }
+footer a:hover { color: var(--navy); text-decoration: underline; }
+
+@media (max-width: 900px) {
+  .hero .cube, .cube.wide-only { display: none; }
+  .hero .wrap { grid-template-columns: 1fr; }
+  .stage { order: -1; width: min(100%, 520px); margin: 0 auto; }
+  .games, .studio { grid-template-columns: 1fr; }
+  .inardi { grid-template-columns: 1fr; }
+  .phones { min-height: 0; height: min(92vw, 420px); max-width: 420px; }
+  .next { min-height: 360px; }
+}
+@media (max-width: 560px) {
+  .nav a { padding: 10px 13px; font-size: .9rem; }
+  .nav a:nth-child(2) { display: none; }
+  .brand span { display: none; }
+  .tiles { grid-template-columns: 1fr; }
+  .tile { flex-direction: row; text-align: left; align-items: center; }
+  .tile svg { width: 52px; height: 52px; flex: none; }
+  .tile div { display: flex; flex-direction: column; gap: 4px; }
+}
+@media (min-width: 561px) { .tile div { display: flex; flex-direction: column; gap: 8px; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="cb" viewBox="0 0 20 22"><polygon style="fill:var(--ft)" points="10,0 20,5.5 10,11 0,5.5"/><polygon style="fill:var(--fl)" points="0,5.5 10,11 10,22 0,16.5"/><polygon style="fill:var(--fr)" points="10,11 20,5.5 20,16.5 10,22"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Each Pixel Matters, home">
+      <svg viewBox="0 0 272 253" aria-hidden="true"><path fill="#1c1f55" d="M0 0H33V253H0ZM0 0H81V34H0ZM0 94H81V128H0ZM0 220H127V253H0ZM94 0H127V207H94ZM94 0H194V34H94ZM161 0H194V128H161ZM94 94H194V128H94ZM206 62H272V174H206ZM139 140H272V174H139ZM139 140H173V253H139ZM189 140H223V207H189ZM239 140H272V253H239Z"/><path fill="#f2c14e" d="M234 0H272V38H234Z"/></svg>
+      <span>Each Pixel<br>Matters</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#games">Games</a>
+      <a href="#studio">Studio</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <svg class="cube" style="--c:var(--coral);--s:16px;left:-6px;top:58%" viewBox="0 0 20 22"><use href="#cb"/></svg>
+      <svg class="cube" style="--c:var(--teal);--s:22px;left:2%;top:74%" viewBox="0 0 20 22"><use href="#cb"/></svg>
+      <svg class="cube" style="--c:var(--yellow);--s:12px;left:46%;top:8%" viewBox="0 0 20 22"><use href="#cb"/></svg>
+      <div class="copy">
+        <h1>Games made one pixel at a time.</h1>
+        <p class="lede">We're a small studio making mobile games that feel like hand-made toys: quick to pick up, lovely to look at, and polished down to the last pixel.</p>
+        <div class="actions">
+          <a class="btn yellow" href="#games">See our games</a>
+          <a class="btn outline" href="https://edhakob1an.github.io/inardi/" target="_blank" rel="noopener">Play iNardi</a>
+        </div>
+      </div>
+      <div class="stage">
+        <canvas id="voxels" role="img" aria-label="The Each Pixel Matters logo built from 3D cubes, with one gold cube on top"></canvas>
+        <p class="tip">Tap the cubes</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="games" aria-labelledby="games-h">
+    <div class="wrap">
+      <h2 id="games-h">Games</h2>
+      <div class="games">
+        <article class="card inardi" aria-labelledby="inardi-h">
+          <div class="txt">
+            <img class="logo" src="img/inardi-logo.webp" alt="iNardi" width="900" height="427">
+            <h3 id="inardi-h">Armenian nardi for your phone</h3>
+            <p class="desc">Short and long nardi on carved wooden boards. Play online at your stake, invite a friend with a link, or practise against the bot.</p>
+            <div class="chips"><span>Online rooms</span><span>Friends</span><span>English, Հայերեն, Русский</span></div>
+            <div class="actions"><a class="btn yellow" href="https://edhakob1an.github.io/inardi/" target="_blank" rel="noopener">Play in your browser</a></div>
+          </div>
+          <div class="phones">
+            <img class="a" src="img/inardi-menu.webp" alt="iNardi main menu" loading="lazy" width="585" height="1266">
+            <img class="b" src="img/inardi-game.webp" alt="A game on the carved walnut board" loading="lazy" width="585" height="1266">
+          </div>
+          <div class="soon"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#34a853" d="M3.6 2.2 13.3 12l-9.7 9.8c-.4-.2-.6-.6-.6-1.1V3.3c0-.5.2-.9.6-1.1z"/><path fill="#fbbc04" d="m16.6 15.3-3.3-3.3 3.3-3.3 3.8 2.2c1 .6 1 1.6 0 2.2z"/><path fill="#ea4335" d="M13.3 12 3.6 21.8c.3.2.8.2 1.3-.1l11.7-6.4z"/><path fill="#4285f4" d="M13.3 12 16.6 8.7 4.9 2.3c-.5-.3-1-.3-1.3-.1z"/></svg><span><small>Coming soon to</small>Google Play</span></div>
+        </article>
+        <article class="card next" aria-labelledby="next-h">
+          <h3 id="next-h">Our next game</h3>
+          <canvas id="qmark" aria-hidden="true"></canvas>
+          <p class="base">It's in the works. We'll show it here first.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="studio" aria-labelledby="studio-h">
+    <div class="wrap studio">
+      <div class="about">
+        <h2 id="studio-h">The studio</h2>
+        <p>We started Each Pixel Matters to make the games we want to play ourselves.</p>
+        <p>Our first one, iNardi, brings the nardi we grew up with to the phone, with boards inspired by Armenian woodcarving and stone.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile">
+          <svg viewBox="0 0 10 10" aria-hidden="true" shape-rendering="crispEdges"><rect x="1" y="1" width="8" height="8" fill="#1c1f55"/><rect x="2" y="2" width="6" height="6" fill="#33c1b0"/><rect x="5" y="2" width="3" height="3" fill="#ffc533"/></svg>
+          <div><b>Small on purpose</b><span>A few games at a time, each made with full attention.</span></div>
+        </div>
+        <div class="tile">
+          <svg viewBox="0 0 10 10" aria-hidden="true" shape-rendering="crispEdges"><rect x="2.5" y="0.5" width="5" height="9" fill="#1c1f55"/><rect x="3.5" y="1.5" width="3" height="6" fill="#4b5bd1"/><rect x="3.5" y="1.5" width="1" height="1" fill="#ffc533"/><rect x="5.5" y="3.5" width="1" height="1" fill="#f4725f"/><rect x="4.5" y="5.5" width="1" height="1" fill="#fff"/><rect x="4.5" y="8" width="1" height="1" fill="#fff"/></svg>
+          <div><b>Phones first</b><span>Short sessions, one hand, screens that open in a second.</span></div>
+        </div>
+        <div class="tile">
+          <svg viewBox="0 0 10 10" aria-hidden="true" shape-rendering="crispEdges"><rect x="1" y="1" width="5" height="5" fill="#1c1f55"/><rect x="2" y="2" width="3" height="3" fill="#fff"/><rect x="3" y="3" width="1" height="1" fill="#f2c14e"/><rect x="6" y="6" width="1" height="1" fill="#1c1f55"/><rect x="7" y="7" width="2" height="2" fill="#1c1f55"/></svg>
+          <div><b>Details are the work</b><span>Sound, animation and feel get as much time as features.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <div class="hello">
+        <svg class="cube" style="--c:var(--teal);--s:30px;left:-10px;top:-12px" viewBox="0 0 20 22"><use href="#cb"/></svg>
+        <svg class="cube wide-only" style="--c:var(--coral);--s:20px;left:28px;top:30%" viewBox="0 0 20 22"><use href="#cb"/></svg>
+        <svg class="cube" style="--c:var(--navy);--s:34px;right:-8px;top:-16px" viewBox="0 0 20 22"><use href="#cb"/></svg>
+        <svg class="cube" style="--c:var(--blue);--s:22px;right:36px;bottom:-10px" viewBox="0 0 20 22"><use href="#cb"/></svg>
+        <h2 id="contact-h">Say hello</h2>
+        <a class="mail" id="mailLink" href="mailto:hello@eachpixelmatters.dev">hello@eachpixelmatters.dev</a>
+        <div><button class="copy-btn" type="button" id="copyMail">Copy address</button></div>
+        <p>For partnerships, press or just to say hi. Need help with iNardi? Email <a href="mailto:support@eachpixelmatters.dev">support@eachpixelmatters.dev</a> with your player name.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Each Pixel Matters</span>
+    <a href="privacy.html">Privacy policy</a>
+    <a href="delete-account.html">Delete your account</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const mix = (c, w, k) => `rgb(${c.map((v, i) => Math.round(v + (w[i] - v) * k)).join(',')})`;
+  const shades = h => { const c = hex(h); return { t: mix(c, [255, 255, 255], .3), l: h, r: mix(c, [0, 0, 0], .28) }; };
+
+  // ---- a tiny isometric voxel renderer: cubes are {x, y, z, col}; x runs right-down, y left-down, z up
+  function scene(cv, cubes, opts = {}) {
+    const ctx = cv.getContext('2d'), S = { cubes, w: 0, h: 0, s: 1, ox: 0, oy: 0 };
+    cubes.forEach(c => { c.sh = shades(c.col); c.hop = 0; });
+    const PR = opts.proj || [.97, .22, .42, .3];   // x axis (right, slightly down), y axis (towards the viewer: left and down)
+    const raw = (x, y, z) => [x * PR[0] - y * PR[2], x * PR[1] + y * PR[3] - z];
+    const P = (x, y, z) => { const [a, b] = raw(x, y, z); return [S.ox + a * S.s, S.oy + b * S.s]; };
+    function fit() {
+      const dpr = Math.min(2, devicePixelRatio || 1), r = cv.getBoundingClientRect();
+      S.w = r.width; S.h = r.height; cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+      for (const c of cubes) for (const [dx, dy, dz] of [[0,0,1],[1,0,0],[0,1,0],[1,1,0],[1,0,1],[0,1,1],[0,0,0]]) {
+        const g = c.size || 1, [px, py] = raw(c.x + dx * g, c.y + dy * g, c.z + dz * g);
+        x0 = Math.min(x0, px); x1 = Math.max(x1, px); y0 = Math.min(y0, py - (opts.headroom || 0)); y1 = Math.max(y1, py);
+      }
+      S.s = Math.min(S.w * (opts.fill || .92) / (x1 - x0), S.h * (opts.fill || .92) / (y1 - y0));
+      S.ox = S.w / 2 - (x0 + x1) / 2 * S.s; S.oy = S.h / 2 - (y0 + y1) / 2 * S.s;
+    }
+    const order = () => cubes.slice().sort((a, b) => (a.x + a.y) - (b.x + b.y) || a.z - b.z || a.x - b.x);
+    function poly(pts, fill) { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = fill; ctx.lineWidth = .6; ctx.stroke(); }
+    function draw(t) {
+      ctx.clearRect(0, 0, S.w, S.h);
+      for (const c of order()) {
+        const z = c.z + (c.dz || 0) + Math.sin(Math.min(1, c.hop) * Math.PI) * .7 * (c.hop > 0 ? 1 : 0);
+        if (c.a === 0) continue;
+        const { x, y } = c, g = c.size || 1;
+        ctx.globalAlpha = c.a ?? 1;
+        poly([P(x, y, z + g), P(x + g, y, z + g), P(x + g, y + g, z + g), P(x, y + g, z + g)], c.sh.t);
+        poly([P(x, y + g, z), P(x + g, y + g, z), P(x + g, y + g, z + g), P(x, y + g, z + g)], c.sh.l);
+        poly([P(x + g, y, z), P(x + g, y + g, z), P(x + g, y + g, z + g), P(x + g, y, z + g)], c.sh.r);
+        ctx.globalAlpha = 1;
+      }
+    }
+    // which cube is under a point: test the cube outlines front to back
+    function pick(px, py) {
+      const inside = (pts) => { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > py) !== (yj > py) && px < (xj - xi) * (py - yi) / (yj - yi) + xi) c = !c; } return c; };
+      for (const c of order().reverse()) {
+        const { x, y, z } = c, g = c.size || 1;
+        if (inside([P(x, y, z + g), P(x + g, y, z + g), P(x + g, y, z), P(x + g, y + g, z), P(x, y + g, z), P(x, y + g, z + g)])) return c;
+      }
+      return null;
+    }
+    new ResizeObserver(() => { fit(); draw(); }).observe(cv);
+    fit();
+    return { draw, pick, S };
+  }
+
+  // ---- hero: the EPM mark as cubes (8 × 7 grid from the logo), a heap of colour in front, the gold cube on top
+  const RECTS = [[0,0,33,253],[0,0,81,34],[0,94,81,128],[0,220,127,253],[94,0,127,207],[94,0,194,34],[161,0,194,128],[94,94,194,128],[206,62,272,174],[139,140,272,174],[139,140,173,253],[189,140,223,207],[239,140,272,253]];
+  const NAVY = '#1c1f55', CANDY = ['#ffc533', '#f4725f', '#33c1b0', '#4b5bd1', '#9a6be0'], U = 17, COLS = 16, ROWS = 15;
+  const cubes = [];
+  // the letters: the logo's shapes sampled onto a 16 × 15 grid, standing on a row of colour
+  for (let r = 0; r < ROWS; r++) for (let x = 0; x < COLS; x++) {
+    const px = x * U + U / 2, py = r * U + U / 2;
+    if (RECTS.some(q => px >= q[0] && px < q[2] && py >= q[1] && py < q[3])) cubes.push({ x, y: 0, z: ROWS - r, col: NAVY });
+  }
+  // the gold pixel: one big cube in the logo's corner
+  const gold = { x: 14, y: 0, z: ROWS - 1, size: 2, col: '#f2c14e', gold: true };
+  // a heap of colour at the foot of the letters
+  let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let x = 0; x < COLS; x++) cubes.push({ x, y: 0, z: 0, col: CANDY[Math.floor(rnd() * CANDY.length)] });
+  for (let x = -2; x <= COLS; x++) for (let y = 1; y <= 3; y++) {
+    const h = y === 1 ? (rnd() < .85 ? 1 + (rnd() < .4 ? 1 : 0) + (rnd() < .12 ? 1 : 0) : 0) : y === 2 ? (rnd() < .6 ? 1 + (rnd() < .2 ? 1 : 0) : 0) : (rnd() < .25 ? 1 : 0);
+    for (let z = 0; z < h; z++) cubes.push({ x, y, z, col: CANDY[Math.floor(rnd() * CANDY.length)] });
+  }
+  cubes.push(gold);
+  const cv = document.getElementById('voxels'), hero = scene(cv, cubes, { fill: .9, headroom: .4 });
+  // load: cubes drop in, gold last
+  const t0 = performance.now(), letterOrder = cubes.map(c => ({ c, d: c.gold ? 1.45 : c.col === NAVY ? .2 + c.x * .045 + c.z * .012 + rnd() * .08 : rnd() * .3 }));
+  function frame(now) {
+    const t = (now - t0) / 1000; let busy = false;
+    for (const { c, d } of letterOrder) {
+      const p = reduce ? 1 : Math.max(0, Math.min(1, (t - d) / (c.gold ? .7 : .45)));
+      const e = c.gold ? 1 - Math.pow(1 - p, 3) * Math.cos(p * Math.PI * 2.2) * (1 - p) : 1 - Math.pow(1 - p, 3);
+      c.dz = (1 - e) * (c.gold ? 9 : 5); c.a = p > 0 ? Math.min(1, p * 3) : 0;
+      if (c.hop > 0) { c.hop += .045; if (c.hop >= 1) c.hop = 0; }
+      if (p < 1 || c.hop > 0) busy = true;
+    }
+    hero.draw();
+    if (busy) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  cv.addEventListener('pointerdown', e => {
+    const r = cv.getBoundingClientRect(), c = hero.pick(e.clientX - r.left, e.clientY - r.top);
+    if (c && !c.hop) { c.hop = .001; requestAnimationFrame(frame); }
+  });
+
+  // ---- next game: a question mark of cubes
+  const Q = ['.###.', '#...#', '....#', '..##.', '..#..', '.....', '..#..'];
+  const qc = []; let k = 0;
+  Q.forEach((row, r) => [...row].forEach((ch, x) => { if (ch === '#') qc.push({ x, y: 0, z: 6 - r, col: CANDY[k++ % CANDY.length] }); }));
+  const qs = scene(document.getElementById('qmark'), qc, { fill: .7 });
+  qs.draw();
+
+  // ---- copy the email address
+  const btn = document.getElementById('copyMail'), mail = document.getElementById('mailLink');
+  btn.addEventListener('click', () => {
+    const done = () => { btn.textContent = 'Copied'; setTimeout(() => btn.textContent = 'Copy address', 1800); };
+    const pick = () => { const s = getSelection(), r = document.createRange(); r.selectNodeContents(mail); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected, press copy'; };
+    try { navigator.clipboard.writeText(mail.textContent).then(done, pick); } catch { pick(); }
+  });
+})();
+</script>
+</body>
+</html>
