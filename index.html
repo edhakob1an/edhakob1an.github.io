@@ -105,6 +105,21 @@ h2 { font-size: clamp(2.1rem, 4.6vw, 3.2rem); line-height: 1.05; margin-bottom: 
 .next .base::before { content: ""; position: absolute; left: 0; right: 0; top: -24px; height: 25px; background: var(--teal);
   clip-path: polygon(0 100%, 0 0, 16% 0, 16% 50%, 72% 50%, 72% 0, 84% 0, 84% 50%, 100% 50%, 100% 100%); }
 
+.dd { grid-column: 1 / -1; background: #120d0a; color: #f3e6c4; padding: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; min-height: 440px;
+  background-image: radial-gradient(ellipse at 78% 38%, rgba(214,52,62,.28), transparent 55%), radial-gradient(ellipse at 10% 100%, rgba(52,92,58,.35), transparent 60%); }
+.dd::after { content: ""; position: absolute; top: 0; right: 0; width: 84px; height: 84px; background: #d6343e;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 66% 100%, 66% 66%, 33% 66%, 33% 33%, 0 33%); }
+.dd .txt { position: relative; z-index: 1; display: flex; flex-direction: column; min-width: 0; }
+.dd .logo { width: min(210px, 62%); height: auto; image-rendering: pixelated; margin-left: -6px; filter: drop-shadow(0 4px 0 rgba(0,0,0,.5)); }
+.dd h3 { font-size: 1.45rem; line-height: 1.2; margin-top: 10px; color: #fff; }
+.dd .desc { margin-top: 10px; max-width: 27rem; color: #d9c8a4; font-weight: 600; }
+.dd .chips span { background: rgba(214,52,62,.22); color: #ffd9a8; }
+.dd .actions { margin-top: auto; padding-top: 22px; }
+.dd .btn.yellow { color: var(--navy); }
+.dd .hint { margin-top: 10px; font-size: .88rem; color: #a8977a; font-weight: 600; }
+.dd .phones img { border-color: #000; box-shadow: 0 18px 34px rgba(0,0,0,.6), 0 0 0 1px rgba(214,52,62,.35); }
+.dd .tag { position: absolute; z-index: 2; right: 14px; bottom: 14px; background: #d6343e; color: #fff; border-radius: 10px; padding: 7px 12px; font: 700 .78rem/1.15 var(--body); }
+
 /* studio */
 .studio { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.4fr); gap: clamp(24px, 4vw, 48px); align-items: center; }
 .studio .about p { color: var(--ink-2); max-width: 30rem; font-size: 1.1rem; }
@@ -137,7 +152,7 @@ footer a:hover { color: var(--navy); text-decoration: underline; }
   .hero .wrap { grid-template-columns: 1fr; }
   .stage { order: -1; width: min(100%, 520px); margin: 0 auto; }
   .games, .studio { grid-template-columns: 1fr; }
-  .inardi { grid-template-columns: 1fr; }
+  .inardi, .dd { grid-template-columns: 1fr; }
   .phones { min-height: 0; height: min(92vw, 420px); max-width: 420px; }
   .next { min-height: 360px; }
 }
@@ -216,6 +231,21 @@ footer a:hover { color: var(--navy); text-decoration: underline; }
           <canvas id="qmark" aria-hidden="true"></canvas>
           <p class="base">It's in the works. We'll show it here first.</p>
         </article>
+        <article class="card dd" aria-labelledby="dd-h">
+          <div class="txt">
+            <img class="logo" src="img/dirtydeal-logo.png" alt="Dirty Deal" width="600" height="582">
+            <h3 id="dd-h">A grimy back-room card battle against the Dealer</h3>
+            <p class="desc">Build a deck of ugly, lovable cards, place them face down and let the croupier flip them. Shotgun grannies, toilet mimics and rat kings fight it out on a filthy felt table.</p>
+            <div class="chips"><span>Pixel art</span><span>Deck building</span><span>Briefcases &amp; upgrades</span><span>Daily roulette</span></div>
+            <div class="actions"><a class="btn yellow" href="https://eachpixelmatters.dev/dirtydeal/" target="_blank" rel="noopener">Play in your browser</a></div>
+            <p class="hint">On iPhone: open it in Safari, then Share → Add to Home Screen.</p>
+          </div>
+          <div class="phones">
+            <img class="a" src="img/dirtydeal-menu.webp" alt="Dirty Deal main menu: the alley door under a neon skull sign" loading="lazy" width="585" height="1266">
+            <img class="b" src="img/dirtydeal-game.webp" alt="The croupier flipping cards on the Dealer's table" loading="lazy" width="585" height="1266">
+          </div>
+          <div class="tag">Early access</div>
+        </article>
       </div>
     </div>
   </section>
@@ -225,7 +255,7 @@ footer a:hover { color: var(--navy); text-decoration: underline; }
       <div class="about">
         <h2 id="studio-h">The studio</h2>
         <p>We started Each Pixel Matters to make the games we want to play ourselves.</p>
-        <p>Our first one, iNardi, brings the nardi we grew up with to the phone, with boards inspired by Armenian woodcarving and stone.</p>
+        <p>Our first one, iNardi, brings the nardi we grew up with to the phone, with boards inspired by Armenian woodcarving and stone. Dirty Deal, a pixel-art card battler set in a grimy back room, is next.</p>
       </div>
       <div class="tiles">
         <div class="tile">
