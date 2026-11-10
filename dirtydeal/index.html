@@ -17,7 +17,7 @@
 @font-face{font-family:'Silkscreen';font-weight:700;font-display:swap;src:url(fonts/silkscreen-latin-700-normal.woff2) format('woff2')}
 @font-face{font-family:'VT323';font-weight:400;font-display:swap;src:url(fonts/vt323-latin-400-normal.woff2) format('woff2')}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);height:100%}
-body{margin:0;-webkit-text-size-adjust:100%;overscroll-behavior:none;position:fixed;inset:0}
+body{margin:0;-webkit-text-size-adjust:100%;overscroll-behavior:none;position:fixed;inset:0;-webkit-touch-callout:none}
 </style>
 <style>
 /* Layout: a fixed 9:16 game stage scaled to the screen; every element is placed in % over the painted arena. Single dark look by design. */
@@ -29,11 +29,13 @@ body{margin:0;-webkit-text-size-adjust:100%;overscroll-behavior:none;position:fi
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%}
-body{-webkit-touch-callout:none;background:var(--ink);color:var(--paper);font-family:var(--body);overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+body{background:var(--ink);color:var(--paper);font-family:var(--body);overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 img{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
 .wrap{height:100%;display:grid;place-items:center;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .stage{position:relative;height:100%;max-height:calc((100vw - 32px)*1376/768);aspect-ratio:768/1376;max-width:100%;container-type:size;overflow:hidden;
-  background:#0d0b09 url(assets/table.jpg) center/100% 100% no-repeat;image-rendering:pixelated}
+  background:#0d0b09;image-rendering:pixelated;--tilt:38deg;--r1w:18%;--r1t:35%;--r1a:20.8%;--r1b:41%;--r1c:61.2%;--r0w:21.5%;--r0t:47.5%;--r0a:13.9%;--r0b:39.25%;--r0c:64.6%}
+#bg{position:absolute;left:0;width:100%;top:0;height:100%;background:url(assets/table.jpg) center/100% 100% no-repeat}
+#bg::after{content:"";position:absolute;left:0;right:0;top:100%;height:12%;background:linear-gradient(#0d0b09,#0d0b09)}
 .stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:60;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.55) 100%)}
 .abs{position:absolute}
@@ -71,14 +73,23 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 @keyframes puff{0%{opacity:0;transform:translate(0,0) scale(.35)}12%{opacity:.85}55%{transform:translate(calc(var(--x) * .5),-6cqh) scale(1.6)}100%{opacity:0;transform:translate(var(--x),-13cqh) scale(3)}}
 
 /* arena */
-.slot{position:absolute;aspect-ratio:312/530;display:grid;place-items:center;cursor:pointer;transform:perspective(90cqw) rotateX(38deg);transform-origin:50% 100%;transform-style:preserve-3d}
+.slot{position:absolute;aspect-ratio:312/530;display:grid;place-items:center;cursor:pointer;transform:perspective(90cqw) rotateX(var(--tilt));transform-origin:50% 100%;transform-style:preserve-3d}
 .slot::after{content:"";position:absolute;inset:2%;border:2px dashed rgba(230,214,176,.28);pointer-events:none}
 .slot:has(.cd)::after{display:none}
 .slot.open::before{content:"";position:absolute;inset:3%;border:2px solid rgba(240,201,92,.75);box-shadow:0 0 10px rgba(240,201,92,.5),inset 0 0 10px rgba(240,201,92,.35);animation:pulse 1s steps(2) infinite}
 @keyframes pulse{50%{opacity:.45}}
-.r1{width:18%;top:35%}.r0{width:21.5%;top:47.5%}
-.r1.c0{left:20.8%}.r1.c1{left:41%}.r1.c2{left:61.2%}
-.r0.c0{left:13.9%}.r0.c1{left:39.25%}.r0.c2{left:64.6%}
+.r1{width:var(--r1w);top:var(--r1t)}.r0{width:var(--r0w);top:var(--r0t)}
+.r1.c0{left:var(--r1a)}.r1.c1{left:var(--r1b)}.r1.c2{left:var(--r1c)}
+.r0.c0{left:var(--r0a)}.r0.c1{left:var(--r0b)}.r0.c2{left:var(--r0c)}
+.stage:not(.a1) .smoke{display:none}
+#rain,#bolt{position:absolute;inset:0;pointer-events:none;display:none}
+.a3 #rain{display:block;z-index:3;opacity:.5;background:repeating-linear-gradient(105deg,transparent 0 9px,rgba(190,210,235,.35) 9px 10px,transparent 10px 23px);background-size:100% 46px;animation:rain .35s linear infinite}
+@keyframes rain{to{background-position:-12px 46px}}
+.a3 #bolt{display:block;z-index:4;background:rgba(220,230,255,.9);mix-blend-mode:screen;opacity:0;animation:bolt 9s infinite steps(1)}
+@keyframes bolt{0%{opacity:0}61%{opacity:.55}62%{opacity:0}63%{opacity:.35}64%{opacity:0}}
+#bolt.now{animation:boltnow .5s steps(1)}
+@keyframes boltnow{0%{opacity:.9}20%{opacity:0}40%{opacity:.7}60%{opacity:0}}
+.a2 #flick,.a4 #flick{animation-duration:4.1s}
 .slot .cd{filter:drop-shadow(0 3px 0 rgba(0,0,0,.55))}
 #log{display:none;left:50%;top:75.2%;transform:translate(-50%,-50%);font-family:var(--display);font-size:3.2cqw;color:var(--bulb);background:rgba(8,6,5,.82);padding:.6cqw 2.4cqw;white-space:nowrap;text-shadow:0 0 6px rgba(240,201,92,.5);z-index:5;border:1px solid #000}
 
@@ -190,6 +201,12 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 .tab img{width:70%}
 .tab.on{transform:translateY(-14%) scale(1.14);color:var(--bulb)}
 .plaque{position:absolute;left:50%;top:9.8%;translate:-50% 0;width:66%;text-align:center;background:rgba(8,6,5,.78);border:2px solid #000;box-shadow:0 0 0 1px rgba(240,201,92,.35);padding:1.2cqw 2.4cqw;z-index:2}
+.plaque .arw{position:absolute;top:50%;translate:0 -50%;width:9cqw;height:14cqw;font-family:var(--display);font-weight:700;font-size:6cqw;color:var(--bulb);text-shadow:2px 2px 0 #000;background:rgba(0,0,0,.35);border:1px solid #000}
+.plaque .arw:disabled{opacity:.25}
+.plaque .arw.l{left:-11cqw}.plaque .arw.r{right:-11cqw}
+.plaque .tw{display:block;font-size:3.2cqw;color:#e8a07a;margin-top:.6cqw;line-height:1}
+.plaque.lockd b{color:var(--muted)}
+#battleBtn:disabled{filter:grayscale(1) brightness(.5);animation:none}
 .plaque b{display:block;font-family:var(--display);font-weight:700;font-size:4.6cqw;color:var(--bulb);text-shadow:2px 2px 0 #000;line-height:1.05}
 .plaque span{display:block;font-size:3.6cqw;line-height:1}
 .prog{height:1.5cqh;background:#000;border:1px solid #6b5a3c;margin-top:.8cqw;position:relative;font-family:var(--display);font-size:2cqw;display:grid;place-items:center;color:#fff}
@@ -279,7 +296,8 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 </head>
 <body>
 <div class="wrap">
-<div class="stage" id="stage">
+<div class="stage a1" id="stage">
+  <div id="bg"></div>
   <img class="abs" id="eicon" src="assets/u_skull.png" alt="">
   <div class="bar abs" id="ehp"><i></i><b></b></div>
   <div class="abs" id="round">ROUND 1/5<small>THE BACK ROOM</small></div>
@@ -287,6 +305,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
   <div class="abs" id="dealerWrap"><img id="dealer" src="assets/dealer0.png" alt="The Dealer"><div class="smoke" style="left:72%;top:22%"></div></div>
   <div class="smoke" style="left:89.5%;top:49.6%"></div>
   <div class="abs" id="flick"></div>
+  <div id="rain"></div><div id="bolt"></div>
   <img class="abs" id="croupier" src="assets/hand.png" alt="" hidden>
   <div class="abs" id="info"><div id="logline"></div><div id="infotext"></div></div>
   <div id="slots"></div>
@@ -348,42 +367,58 @@ const C={
   toilet:{n:'Toilet Mimic',f:'Toilet Mimic',cost:4,atk:1,hp:7,role:'Tank',armor:1,t:'Armor 1: every hit deals 1 less. Poison gets through.'},
   dice:{n:'Uncle Dice',f:'Sweaty Uncle Dice',cost:2,atk:0,hp:3,role:'Luck',dice:1,t:'On reveal: rolls a die. Attack = the roll (1 to 6).'},
   blackhole:{n:'Black Hole',f:'Black Hole',cost:4,spell:1,role:'Spell',t:'On reveal: swallows BOTH middle cards. Yours too.'},
-  rat:{n:'Rat',f:'Rat',cost:0,atk:1,hp:1,role:'Token',token:1,t:'A rat. It bites.'}
+  rat:{n:'Rat',f:'Rat',cost:0,atk:1,hp:1,role:'Token',token:1,t:'A rat. It bites.'},
+  golem:{n:'Slot Golem',f:'Slot Machine Golem',cost:6,atk:0,hp:0,role:'Legend',slot:1,leg:1,u:1,t:'On reveal: pulls its own lever. Attack and shield each roll 1 to 9.'},
+  coinflip:{n:'Coin Flip',f:'Coin Flip',cost:2,spell:1,role:'Spell',u:1,t:'Flips a coin for each of your cards: heads +2 attack, tails -1 shield.'},
+  gator:{n:'Gator Busboy',f:'Sewer Gator Busboy',cost:4,atk:3,hp:4,role:'Eater',eat:1,u:1,t:'When it kills a card it eats it, gaining half of that card\'s shield.'},
+  roach:{n:'Roach Bride',f:'Cockroach Bride',cost:1,atk:1,hp:1,role:'Undying',revive:1,u:1,t:'Comes back once, with 1 shield, after dying.'},
+  leech:{n:'Leech Clerk',f:'Leech Accountant',cost:2,atk:1,hp:3,role:'Drain',drain:1,u:1,t:'Heals your HP by the damage it deals.'},
+  jukebox:{n:'Jukebox',f:'Rotten Jukebox',cost:3,atk:0,hp:5,role:'Support',juke:1,u:1,t:'Each turn plays a cursed song: a random ally gets +1 attack.'},
+  smell:{n:'Bad Smell',f:'Bad Smell',cost:1,spell:1,role:'Spell',u:2,t:'On reveal: the enemy cards stumble into random slots.'},
+  vending:{n:'Vending Beast',f:'Broken Vending Machine',cost:4,atk:3,hp:4,role:'Payout',payout:1,u:2,t:'When destroyed, spits out 3 coins for your next round.'},
+  karaoke:{n:'Karaoke Ghoul',f:'Karaoke Ghoul',cost:4,atk:2,hp:3,role:'Splash',splash:1,scream:1,u:2,t:'Screams at ALL enemy cards. Also deals 1 to its own neighbors.'},
+  bellhop:{n:'Bomb Bellhop',f:'Bomb Bellhop',cost:3,atk:1,hp:2,role:'Bomb',bomb:3,u:2,t:'On death: explodes for 3 damage on the card in front.'},
+  mannequin:{n:'Mannequin',f:'Pawnshop Mannequin',cost:3,atk:0,hp:6,role:'Guard',guard:1,u:2,t:'Its neighbors take 1 less damage from every hit.'},
+  mafioso:{n:'Mafioso',f:'Mustache Mafioso',cost:5,atk:4,hp:5,role:'Fast',fast:1,u:3,t:'Fast: shoots before everyone else each turn.'},
+  rabbit:{n:"Rabbit's Foot",f:"Lucky Rabbit's Foot",cost:2,spell:1,role:'Spell',u:3,t:'A random card of yours gets +2/+2. One time in four, it dies instead.'},
+  lastcall:{n:'Last Call',f:'Last Call',cost:3,spell:1,role:'Spell',u:3,t:'Every card on the table takes 2 damage. Armor does not help.'}
 };
-const ALL=['gremlin','pigeon','fingers','ratking','sandwich','clown','grandma','toilet','dice','blackhole'];
-const LOCKED=[{k:'golem',n:'Slot Golem',fr:'legend',a:'ARENA 2'},{k:'coinflip',n:'Coin Flip',fr:'spell',a:'ARENA 2'},{k:'smell',n:'Bad Smell',fr:'spell',a:'ARENA 3'},{k:'vending',n:'Vending Beast',fr:'common',a:'ARENA 3'}];
+for(const k in C)if(C[k].u==null)C[k].u=0;
+const ALL=Object.keys(C).filter(k=>!C[k].token);
 const ROUNDS=5,START_HP=20;
 const rnd=n=>Math.floor(Math.random()*n);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const $=id=>document.getElementById(id);
 
-function frameOf(id){const d=C[id];return d.spell?'spell':d.token?'token':'common'}
+function frameOf(id){const d=C[id];return d.spell?'spell':d.token?'token':d.leg?'legend':'common'}
 function cardHTML(id,inst,lvl){
   const d=C[id],fr=frameOf(id);
   let h=`<div class="cd ${fr}"><img class="fr" src="assets/f_${fr}.png" alt=""><img class="art" src="assets/c_${id}.png" alt="">`;
   if(!inst||inst.fresh)h+=`<span class="cost">${d.cost}</span>`;
   h+=`<span class="nm">${d.n}</span>`;
   if(!d.spell){
-    const bs=statsFor(id,lvl||1),atk=inst?inst.atk:(d.dice?'?':bs.atk),hp=inst?inst.hp:bs.hp;
+    const bs=statsFor(id,lvl||1),atk=inst&&!(d.slot&&inst.fresh)?inst.atk:(d.dice||d.slot?'?':bs.atk),hp=inst&&!(d.slot&&inst.fresh)?inst.hp:(d.slot?'?':bs.hp);
     h+=`<span class="st atk">${atk}</span><span class="st hpv">${hp}</span>`;
     if(inst){let ch='';
       if(d.armor)ch+=`<span class="chip"><img src="assets/u_armor.png" alt="">${d.armor}</span>`;
       if(inst.poison>0)ch+=`<span class="chip"><img src="assets/u_skull.png" alt="">${inst.poison}</span>`;
       if(inst.stuck>0)ch+=`<span class="chip"><img src="assets/u_gum.png" alt=""></span>`;
+      if(d.revive&&!inst.revived)ch+=`<span class="chip">x2</span>`;
       if(ch)h+=`<div class="chips">${ch}</div>`}
   }
   const L=inst?inst.lvl:lvl;if(L&&!d.token)h+=`<span class="lv">LV${L}</span>`;
   return h+'</div>';
 }
 const BACK='<div class="cd"><img class="back" src="assets/back.png" alt="Face-down card"></div>';
-function infoHTML(id){const d=C[id];return `<strong>${d.f.toUpperCase()} · ${d.role.toUpperCase()}</strong>${d.t}${d.spell?` <em>${d.cost} coins</em>`:` <em>${d.dice?'?':d.atk} atk, ${d.hp} shield, ${d.cost} coins</em>`}`}
+function infoHTML(id){const d=C[id];return `<strong>${d.f.toUpperCase()} · ${d.role.toUpperCase()}</strong>${d.t}${d.spell?` <em>${d.cost} coins</em>`:` <em>${d.dice||d.slot?'?':d.atk} atk, ${d.slot?'?':d.hp} shield, ${d.cost} coins</em>`}`}
 function setInfo(html){$('infotext').innerHTML=html}
 
 /* dealer moods: 0 idle, 1 laugh, 2 angry, 3 shocked */
 let moodT=null;
-function mood(m,ms){const el=$('dealer');el.src=`assets/dealer${m}.png`;el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),200);
-  clearTimeout(moodT);if(ms)moodT=setTimeout(()=>{el.src='assets/dealer0.png'},ms)}
+let DPRE='dealer';
+function mood(m,ms){const el=$('dealer');el.src=`assets/${DPRE}${m}.png`;el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),200);
+  clearTimeout(moodT);if(ms)moodT=setTimeout(()=>{el.src=`assets/${DPRE}0.png`},ms)}
 
 /* smoke puffs */
 document.querySelectorAll('.smoke').forEach(e=>{for(let i=0;i<8;i++){const p=document.createElement('span');const d=3.2+Math.random()*1.6;
@@ -393,13 +428,30 @@ document.querySelectorAll('.smoke').forEach(e=>{for(let i=0;i<8;i++){const p=doc
 let deck=[],S=null,uid=0;
 try{const s=JSON.parse(localStorage.getItem('dd-deck')||'null');if(Array.isArray(s)&&s.length===6&&s.every(x=>ALL.includes(x)))deck=s}catch(_){}
 if(!deck.length)deck=['gremlin','fingers','ratking','sandwich','grandma','toilet'];
-function mk(id,side){const d=C[id],l=d.token?1:side===0?P.cards[id].l:(S&&S.elvl)||1,st=statsFor(id,l);return{uid:++uid,id,side,lvl:l,atk:st.atk,hp:st.hp,poison:0,stuck:0,fresh:true,hidden:true}}
+function mk(id,side){const d=C[id],l=d.token?1:side===0?P.cards[id].l:(S&&S.elvl)||1,st=statsFor(id,l);const o={uid:++uid,id,side,lvl:l,atk:st.atk,hp:st.hp,poison:0,stuck:0,fresh:true,hidden:true};if(side===1&&S&&S.arena===3&&!d.spell)o.hp+=1;return o}
 
 $('again').onclick=()=>{$('endScreen').hidden=true;newMatch()};
 $('edit').onclick=()=>{$('endScreen').hidden=true;openMenu(1)};
 
 /* ---------- profile ---------- */
-const ARENAS=[{t:0,n:'THE BACK ROOM'},{t:100,n:'THE SEWER CASINO'},{t:250,n:'THE ROOFTOP RACKET'},{t:500,n:'THE VIP VAULT'}];
+const ARENAS=[
+ {t:0,n:'THE BACK ROOM',who:'The Dealer',pre:'dealer',bg:'table.jpg',tw:'',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:12.6,dh:23.8,gl:[22.1,13.8]}},
+ {t:100,n:'THE DRAIN',who:'The Croc',pre:'d2_',bg:'table2.jpg',tw:'Poison lasts 1 turn longer down here.',g:{tilt:52,shift:0,r1w:16.5,r1t:41.86,r1:[22.11,42.93,63.75],r0w:19,r0t:50.52,r0:[18.23,41.33,64.44],dt:21.6,dh:23.6,gl:[19.5,25.4]}},
+ {t:250,n:'THE ROOFTOP',who:'The Collector',pre:'d3_',bg:'table3.jpg',tw:'Lightning may strike a random card for 3.',g:{tilt:52,shift:-4.8,r1w:15.5,r1t:42.37,r1:[25.58,42.81,60.03],r0w:19,r0t:50.08,r0:[19.72,41.56,63.41],dt:25.8,dh:18.4,gl:[15,16.3]}},
+ {t:500,n:'THE VAULT',who:'The Owner',pre:'d4_',bg:'table4.jpg',tw:"The Owner's cards start with +1 shield.",g:{tilt:38,shift:0,r1w:18,r1t:35.23,r1:[21,41.77,62.54],r0w:21.5,r0t:47.78,r0:[13.23,39.61,65.98],dt:14.4,dh:21.2,gl:[22.8,14.2]}}];
+let TILT=38;
+function applyArena(k){
+  const A=ARENAS[k],g=A.g,st=$('stage');
+  st.classList.remove('a1','a2','a3','a4');st.classList.add('a'+(k+1));
+  const v={'--tilt':g.tilt+'deg','--r1w':g.r1w+'%','--r1t':g.r1t+'%','--r1a':g.r1[0]+'%','--r1b':g.r1[1]+'%','--r1c':g.r1[2]+'%','--r0w':g.r0w+'%','--r0t':g.r0t+'%','--r0a':g.r0[0]+'%','--r0b':g.r0[1]+'%','--r0c':g.r0[2]+'%'};
+  for(const n in v)st.style.setProperty(n,v[n]);
+  TILT=g.tilt;
+  const bg=$('bg');bg.style.backgroundImage=`url(assets/${A.bg})`;bg.style.top=g.shift+'%';
+  const dw=$('dealerWrap');dw.style.top=g.dt+'%';dw.style.height=g.dh+'%';
+  const gl=$('glow');gl.style.left=g.gl[0]+'%';gl.style.top=g.gl[1]+'%';
+  $('flick').style.background=`radial-gradient(ellipse at ${g.gl[0]}% ${g.gl[1]}%,rgba(0,0,0,.2),rgba(0,0,0,.55))`;
+  DPRE=A.pre;$('dealer').src=`assets/${DPRE}0.png`;
+}
 const UP={1:{n:2,g:50},2:{n:4,g:150},3:{n:10,g:400},4:{n:20,g:1000}};
 const CASES=[{n:'Cardboard Box',t:20,cards:3,gold:[15,30],chips:0},{n:'Leather Briefcase',t:60,cards:6,gold:[40,70],chips:0},{n:'Steel Safe',t:180,cards:12,gold:[100,160],chips:3},{n:'Golden Suitcase',t:480,cards:25,gold:[250,400],chips:10}];
 const DEF_DECK=['gremlin','fingers','ratking','sandwich','grandma','toilet'];
@@ -407,10 +459,14 @@ function defP(){const cards={};ALL.forEach(id=>cards[id]={l:1,n:0});return{gold:
 let P=null;try{P=JSON.parse(localStorage.getItem('dd-p')||'null')}catch(_){}
 if(!P||!P.cards||!P.decks)P=defP();
 ALL.forEach(id=>{if(!P.cards[id])P.cards[id]={l:1,n:0}});
+if(P.best==null)P.best=0;
 function saveP(){try{localStorage.setItem('dd-p',JSON.stringify(P))}catch(_){}}
 const deckNow=()=>P.decks[P.di];
 function statsFor(id,l){const d=C[id];l=l||1;return{atk:(d.atk||0)+Math.floor((l-1)/2),hp:(d.hp||0)+(l-1)}}
 const arenaOf=t=>{let k=0;ARENAS.forEach((a,i)=>{if(t>=a.t)k=i});return k};
+P.best=Math.max(P.best,arenaOf(P.trophies));if(P.sel==null||P.sel>P.best)P.sel=P.best;
+const unlocked=id=>C[id].u<=P.best;
+const ownedIds=()=>ALL.filter(unlocked);
 const fmt=s=>{s=Math.max(0,Math.ceil(s));const m=Math.floor(s/60),r=s%60;return m>=60?`${Math.floor(m/60)}h ${m%60}m`:m?`${m}:${String(r).padStart(2,'0')}`:`${r}s`};
 let toastT=null;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1600)}
 
@@ -426,10 +482,17 @@ function renderMenu(){renderTop();renderBattle();renderCards();renderShop()}
 function renderTop(){let up=0;ALL.forEach(id=>up+=P.cards[id].l-1);$('pLvl').textContent=1+Math.floor(up/2);$('pTro').textContent=P.trophies;$('pGold').textContent=P.gold;$('pChips').textContent=P.chips}
 
 /* ---------- battle tab ---------- */
+const tc=x=>x.replace(/\w\S*/g,w=>w[0]+w.slice(1).toLowerCase());
 function renderBattle(){
-  const k=arenaOf(P.trophies),a=ARENAS[k],nx=ARENAS[k+1];
-  const pct=nx?Math.min(100,(P.trophies-a.t)/(nx.t-a.t)*100):100;
-  $('arenaPl').innerHTML=`<b>ARENA ${k+1}</b><span>${a.n.replace(/\w\S*/g,w=>w[0]+w.slice(1).toLowerCase())}</span><div class="prog"><i style="width:${pct}%"></i><em>${nx?`${P.trophies} / ${nx.t}`:'TOP ARENA'}</em></div>`;
+  const k=P.sel,a=ARENAS[k],lock=k>P.best,cur=arenaOf(P.trophies),nx=ARENAS[cur+1];
+  const pct=nx?Math.min(100,(P.trophies-ARENAS[cur].t)/(nx.t-ARENAS[cur].t)*100):100;
+  const pl=$('arenaPl');pl.classList.toggle('lockd',lock);
+  pl.innerHTML=`<button class="arw l" type="button" id="arL" aria-label="Previous arena" ${k===0?'disabled':''}>‹</button><button class="arw r" type="button" id="arR" aria-label="Next arena" ${k===ARENAS.length-1?'disabled':''}>›</button>
+   <b>ARENA ${k+1}${lock?' · LOCKED':''}</b><span>${tc(a.n)} · ${a.who}</span>${a.tw?`<span class="tw">${a.tw}</span>`:''}
+   <div class="prog"><i style="width:${lock?Math.min(100,P.trophies/a.t*100):pct}%"></i><em>${lock?`Reach ${a.t} trophies`:nx?`${P.trophies} / ${nx.t}`:'TOP ARENA'}</em></div>`;
+  $('arL').onclick=()=>{P.sel=Math.max(0,P.sel-1);saveP();renderBattle()};
+  $('arR').onclick=()=>{P.sel=Math.min(ARENAS.length-1,P.sel+1);saveP();renderBattle()};
+  $('battleBtn').disabled=lock;
   $('deckPeek').textContent=`DECK ${P.di+1} · AVG COST ${avgCost()}`;
   renderCases();
 }
@@ -456,7 +519,7 @@ function tapCase(i){
   $('cNow').onclick=()=>{if(P.chips<cost)return;P.chips-=cost;c.at=Date.now();saveP();openCase(i)};
 }
 function grantCards(total){
-  const ids=shuffle(ALL).slice(0,Math.min(4,1+Math.floor(total/4)));const out={};
+  const ids=shuffle(ownedIds()).slice(0,Math.min(4,1+Math.floor(total/4)));const out={};
   for(let k=0;k<total;k++){const id=ids[k<ids.length?k:rnd(ids.length)];out[id]=(out[id]||0)+1}
   for(const id in out)P.cards[id].n+=out[id];return out;
 }
@@ -469,7 +532,8 @@ function openCase(i){
    <div class="btns"><button class="b y" id="cOk" type="button">COLLECT</button></div>`,true);
   $('cOk').onclick=()=>{closePop();renderMenu()};
 }
-$('battleBtn').onclick=()=>{closePop();$('menu').hidden=true;newMatch()};
+$('battleBtn').onclick=()=>{if(P.sel>P.best)return;closePop();$('menu').hidden=true;newMatch()};
+let lvlTaps=0;$('pLvl').onclick=()=>{if(++lvlTaps>=5){lvlTaps=0;P.trophies+=100;const b=P.best;P.best=Math.max(P.best,arenaOf(P.trophies));if(P.best>b)P.sel=P.best;saveP();toast('TEST: +100 TROPHIES');renderMenu()}};
 
 /* ---------- cards tab ---------- */
 const avgCost=()=>(deckNow().reduce((s,id)=>s+C[id].cost,0)/6).toFixed(1);
@@ -482,17 +546,17 @@ function renderCards(){
     el.onclick=()=>{if(swapId){deckNow()[k]=swapId;saveP();toast('DECK UPDATED');endSwap();renderMenu()}else cardPop(id,true)};row.appendChild(el)});
   $('avg').innerHTML=`Avg cost <b style="color:var(--bulb)">${avgCost()}</b> · tap a card to upgrade or swap`;
   const co=$('coll');co.innerHTML='';
-  ALL.filter(id=>!deckNow().includes(id)).forEach(id=>{const el=document.createElement('div');el.className='mc';el.innerHTML=cardHTML(id,null,P.cards[id].l)+barHTML(id);el.onclick=()=>cardPop(id,false);co.appendChild(el)});
-  LOCKED.forEach((l,i)=>{const el=document.createElement('div');el.className='mc lock';
-    el.innerHTML=`<div class="cd"><img class="fr" src="assets/f_${l.fr}.png" alt=""><img class="art" src="assets/c_${l.k}.png" alt=""></div><div class="lockt"><img src="assets/u_lock.png" alt="">${l.n.toUpperCase()}<br>${l.a}</div><div class="mbar"><b>${ARENAS[+l.a.slice(-1)-1].t} <span style="color:var(--bulb)">TROPHIES</span></b></div>`;
-    el.onclick=()=>toast(`UNLOCKS IN ${l.a}`);co.appendChild(el)});
+  ownedIds().filter(id=>!deckNow().includes(id)).forEach(id=>{const el=document.createElement('div');el.className='mc';el.innerHTML=cardHTML(id,null,P.cards[id].l)+barHTML(id);el.onclick=()=>cardPop(id,false);co.appendChild(el)});
+  ALL.filter(id=>!unlocked(id)).sort((x,y)=>C[x].u-C[y].u).forEach(id=>{const d=C[id],el=document.createElement('div');el.className='mc lock';
+    el.innerHTML=`<div class="cd"><img class="fr" src="assets/f_${frameOf(id)}.png" alt=""><img class="art" src="assets/c_${id}.png" alt=""></div><div class="lockt"><img src="assets/u_lock.png" alt="">${d.n.toUpperCase()}<br>ARENA ${d.u+1}</div><div class="mbar"><b>${ARENAS[d.u].t} <span style="color:var(--bulb)">TROPHIES</span></b></div>`;
+    el.onclick=()=>toast(`UNLOCKS IN ARENA ${d.u+1}: ${ARENAS[d.u].n}`);co.appendChild(el)});
   row.classList.toggle('swap',!!swapId);
 }
 function endSwap(){swapId=null;const r=$('deckRow');if(r)r.classList.remove('swap')}
 function cardPop(id,inDeck){
   const c=P.cards[id],d=C[id],u=UP[c.l],now=statsFor(id,c.l),nx=statsFor(id,c.l+1);
   const canUp=u&&c.n>=u.n&&P.gold>=u.g;
-  const st=d.spell?'':`<div class="stat"><span>ATTACK</span><span>${d.dice?'1–6':now.atk}${u&&!d.dice&&nx.atk>now.atk?` <em>→ ${nx.atk}</em>`:''}</span></div><div class="stat"><span>SHIELD</span><span>${now.hp}${u?` <em>→ ${nx.hp}</em>`:''}</span></div>`;
+  const st=d.spell?'':`<div class="stat"><span>ATTACK</span><span>${d.dice?'1–6':d.slot?'1–9':now.atk}${u&&!d.dice&&nx.atk>now.atk?` <em>→ ${nx.atk}</em>`:''}</span></div><div class="stat"><span>SHIELD</span><span>${d.slot?'1–9':now.hp}${u&&!d.slot?` <em>→ ${nx.hp}</em>`:''}</span></div>`;
   pop(`<h3>${d.f.toUpperCase()}</h3><div class="prow"><div class="bigc">${cardHTML(id,null,c.l)}${barHTML(id)}</div><div class="txt"><p><span style="font-family:var(--display);font-size:2.8cqw;color:var(--muted)">${d.role.toUpperCase()} · COST ${d.cost} · LEVEL ${c.l}</span><br>${d.t}</p>${st}</div></div>
    <div class="btns">${u?`<button class="b g" id="pUp" type="button" ${canUp?'':'disabled'}>UPGRADE <img src="assets/u_coin.png" alt="">${u.g}</button>`:''}${inDeck?'':'<button class="b y" id="pUse" type="button">USE</button>'}</div>
    ${u&&c.n<u.n?`<p style="text-align:center;margin-top:2cqw;color:var(--muted)">Collect ${u.n-c.n} more from cases or the Black Market.</p>`:''}`);
@@ -502,7 +566,7 @@ function cardPop(id,inDeck){
 
 /* ---------- black market ---------- */
 const DAY=864e5;
-function dealsNow(){const day=Math.floor(Date.now()/DAY);if(!P.deals||P.deals.day!==day){const ids=shuffle(ALL).slice(0,3),q=[6,4,2];
+function dealsNow(){const day=Math.floor(Date.now()/DAY);if(!P.deals||P.deals.day!==day){const ids=shuffle(ownedIds()).slice(0,3),q=[6,4,2];
   P.deals={day,items:ids.map((id,i)=>({id,q:q[i],p:q[i]*(8+C[id].cost*4),sold:false})).concat([{caseK:3,p:60,sold:false}])};saveP()}return P.deals}
 function renderShop(){
   const left=DAY-(Date.now()-P.spin);
@@ -547,7 +611,8 @@ const slotEl=(s,i)=>slotEls[s][i];
 
 /* ---------- match ---------- */
 function newMatch(){
-  S={round:1,hp:[START_HP,START_HP],coins:[0,0],bonus:[0,0],board:[[null,null,null],[null,null,null]],pile:[shuffle(deckNow()),shuffle(shuffle(ALL).slice(0,6))],hand:[],sel:null,phase:'plan',elvl:Math.min(5,1+Math.floor(P.trophies/80))};
+  const ar=P.sel;applyArena(ar);
+  S={arena:ar,round:1,hp:[START_HP,START_HP],coins:[0,0],bonus:[0,0],board:[[null,null,null],[null,null,null]],pile:[shuffle(deckNow()),shuffle(shuffle(ALL.filter(id=>C[id].u<=ar)).slice(0,6))],hand:[],sel:null,phase:'plan',elvl:Math.min(6,Math.max(ar+1,1+Math.floor(P.trophies/80)))};
   mood(0);startRound();
 }
 function startRound(){
@@ -564,7 +629,8 @@ function enemyPlan(){
   for(const id of shuffle(hand)){
     const empty=[0,1,2].filter(i=>!S.board[1][i]);if(!empty.length)break;
     const d=C[id];if(d.cost>S.coins[1])continue;
-    if(d.spell&&!S.board[0][1]&&Math.random()<.6)continue;
+    if(id==='blackhole'&&!S.board[0][1]&&Math.random()<.6)continue;
+    if((id==='rabbit'||id==='coinflip')&&!S.board[1].some(Boolean)&&Math.random()<.7)continue;
     const facing=empty.filter(i=>S.board[0][i]);
     const lane=(facing.length&&Math.random()<.6)?facing[rnd(facing.length)]:empty[rnd(empty.length)];
     S.board[1][lane]=mk(id,1);S.coins[1]-=d.cost;
@@ -587,7 +653,7 @@ function render(){
   });
   for(const s of[0,1]){const e=s?$('ehp'):$('php');e.querySelector('i').style.width=`calc(89% * ${Math.max(0,S.hp[s])/START_HP})`;e.querySelector('b').textContent=`${Math.max(0,S.hp[s])} HP`}
   $('coinN').textContent=S.coins[0];
-  $('round').innerHTML=`ROUND ${Math.min(S.round,ROUNDS)}/${ROUNDS}<small>THE BACK ROOM</small>`;
+  $('round').innerHTML=`ROUND ${Math.min(S.round,ROUNDS)}/${ROUNDS}<small>${ARENAS[S.arena||0].n}</small>`;
   const f=$('fight');f.disabled=S.phase!=='plan';f.querySelector('img').src=S.phase==='plan'?'assets/u_fight.png':'assets/u_fight_d.png';
 }
 function log(t){$('logline').textContent=t}
@@ -633,7 +699,7 @@ async function fly(from,toEl,startHTML,endHTML,dur,flip){
     {transform:T(sx,sy,0,s0,0,0)},
     {transform:T(mx,my,flip?-7:6,(s0+1)/2*1.12,0,10),offset:.45},
     {transform:T(ex,ey-h*.05,0,1.04,0,30),offset:.82},
-    {transform:T(ex,ey,0,1,0,38)}],{duration:dur,easing:ease});
+    {transform:T(ex,ey,0,1,0,TILT)}],{duration:dur,easing:ease});
   f.querySelector('.fshadow').animate([{opacity:.15,transform:'translate(0,0) scale(.9)'},{opacity:.5,transform:'translate(10%,22%) scale(1.05)',offset:.45},{opacity:.65,transform:'translate(2%,4%) scale(1)'}],{duration:dur,easing:ease});
   if(flip)f.querySelector('.f3').animate([{transform:'rotateY(0deg)'},{transform:'rotateY(180deg)'}],{duration:dur*.7,easing:'cubic-bezier(.45,0,.2,1)',fill:'forwards'});
   await a.finished.catch(()=>{});f.remove();
@@ -688,12 +754,16 @@ async function battle(){
   for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&C[c.id].spell){S.board[s][i]=null;render();await cast(c,s)}}
   for(const s of[0,1])for(let i=0;i<3;i++){
     const c=S.board[s][i];if(!c||!c.fresh)continue;
+    if(c.id==='golem'){c.fresh=false;c.atk=1+rnd(9)+Math.floor((c.lvl-1)/2);c.hp=1+rnd(9)+(c.lvl-1)+(s===1&&S.arena===3?1:0);c.fresh=true;render();const el=slotEl(s,i);float(el,`${c.atk} / ${c.hp}`,'#f0c95c');vfx(el,'coins');log(`SLOT GOLEM ROLLED ${c.atk} / ${c.hp}`);await sleep(800)}
     if(c.id==='dice'){c.atk=1+rnd(6);render();float(slotEl(s,i),'ROLL '+c.atk,'#f0c95c');vfx(slotEl(s,i),'spark');log(`UNCLE DICE ROLLED ${c.atk}`);await sleep(700)}
     if(c.id==='ratking'){let n=0;for(let j=0;j<3;j++)if(!S.board[s][j]){S.board[s][j]=mk('rat',s);S.board[s][j].hidden=false;n++}
       if(n){render();log(`RAT KING CALLS ${n} RAT${n>1?'S':''}`);for(let j=0;j<3;j++){const x=S.board[s][j];if(x&&x.id==='rat'&&x.fresh)fx(cardOf(s,j),'flip')}await sleep(700)}}
   }
   for(const s of[0,1])for(const c of S.board[s])if(c){c.fresh=false;c.hidden=false}
   render();
+  if(S.arena===2&&Math.random()<.5){const occ=[];for(const s of[0,1])for(let i=0;i<3;i++)if(S.board[s][i])occ.push([s,i]);
+    if(occ.length){const[s,i]=occ[rnd(occ.length)],c=S.board[s][i];const b=$('bolt');b.classList.remove('now');void b.offsetWidth;b.classList.add('now');
+      c.hp-=3;render();fx(cardOf(s,i),'hit');float(slotEl(s,i),'ZAP -3','#cfe0ff');vfx(slotEl(s,i),'spark');log('LIGHTNING STRIKES!');await sleep(700);await cleanup()}}
   for(let t=1;t<=3;t++){
     log(`FIGHT · TURN ${t}`);await sleep(350);
     const acted=await turn();
@@ -705,6 +775,15 @@ async function battle(){
   startRound();
 }
 async function cast(c,s){
+  const who=s?'DEALER':'YOU',o=1-s;
+  if(c.id==='smell'){log(`${who} CAST BAD SMELL`);for(let j=0;j<3;j++)vfx(slotEl(o,j),'poison');await sleep(450);S.board[o]=shuffle(S.board[o]);render();for(let j=0;j<3;j++)if(S.board[o][j])fx(cardOf(o,j),'flip');await sleep(500);return}
+  if(c.id==='coinflip'){log(`${who} FLIP A COIN`.replace('DEALER FLIP','DEALER FLIPS'));for(let j=0;j<3;j++){const x=S.board[s][j];if(!x||C[x.id].spell)continue;const h=Math.random()<.5;if(h)x.atk+=2;else x.hp-=1;render();float(slotEl(s,j),h?'HEADS +2':'TAILS -1',h?'#f0c95c':'#ff7a5c');vfx(slotEl(s,j),h?'coins':'spark');await sleep(380)}await cleanup();return}
+  if(c.id==='rabbit'){const own=[0,1,2].filter(j=>S.board[s][j]&&!C[S.board[s][j].id].spell);log(`${who} RUB THE RABBIT'S FOOT`.replace('DEALER RUB','DEALER RUBS'));
+    if(!own.length){float(slotEl(s,1),'NO ONE TO BLESS','#cfc');await sleep(500);return}
+    const j=own[rnd(own.length)],x=S.board[s][j];if(Math.random()<.25){x.hp=0;float(slotEl(s,j),'CURSED!','#ff7a5c');vfx(slotEl(s,j),'boom')}else{x.atk+=2;x.hp+=2;render();float(slotEl(s,j),'+2 / +2','#a6d257');vfx(slotEl(s,j),'spark')}
+    await sleep(650);await cleanup();return}
+  if(c.id==='lastcall'){log(`${who} RANG LAST CALL`);for(const q of[0,1])for(let j=0;j<3;j++){const x=S.board[q][j];if(!x)continue;x.hp-=2;fx(cardOf(q,j),'hit');float(slotEl(q,j),'-2','#ff7a5c');vfx(slotEl(q,j),'boom')}
+    render();await sleep(700);await cleanup();return}
   if(c.id==='blackhole'){
     log(`${s?'DEALER':'YOU'} CAST BLACK HOLE`);
     vfx(slotEl(0,1),'hole');vfx(slotEl(1,1),'hole');
@@ -716,11 +795,20 @@ async function cast(c,s){
 }
 async function turn(){
   let ticked=false;
+  for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&C[c.id].juke){const al=[0,1,2].filter(j=>j!==i&&S.board[s][j]&&!C[S.board[s][j].id].spell);if(al.length){const j=al[rnd(al.length)];S.board[s][j].atk+=1;float(slotEl(s,j),'+1 ATK','#f0c95c');vfx(slotEl(s,i),'honk');ticked=true}}}
   for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&c.poison>0){c.hp-=c.poison;float(slotEl(s,i),'-'+c.poison,'#a6d257');vfx(slotEl(s,i),'poison');c.poison--;ticked=true}}
   if(ticked){render();await sleep(500);await cleanup()}
+  const a=await attackPhase(true);
+  if(S.hp[0]<=0||S.hp[1]<=0)return true;
+  const b=await attackPhase(false);
+  return a||b;
+}
+const guarded=(t)=>{const s=t.side,i=S.board[s].indexOf(t);return[i-1,i+1].some(j=>j>=0&&j<3&&S.board[s][j]&&C[S.board[s][j].id].guard&&S.board[s][j].hp>0)};
+async function attackPhase(fast){
   const hits=[],attackers=[];
   for(const s of[0,1])for(let i=0;i<3;i++){
-    const c=S.board[s][i];if(!c||c.atk<=0)continue;const d=C[c.id],o=1-s;
+    const c=S.board[s][i];if(!c||c.atk<=0||c.hp<=0)continue;const d=C[c.id],o=1-s;
+    if(!!d.fast!==fast)continue;
     if(c.stuck>0){c.stuck--;float(slotEl(s,i),'STUCK','#f59ad3');continue}
     attackers.push([s,i]);
     const targets=d.splash?[0,1,2].filter(j=>S.board[o][j]):(S.board[o][i]?[i]:[]);
@@ -728,26 +816,33 @@ async function turn(){
       if(!targets.length)hits.push({c,s,face:true,dmg:c.atk});
       else targets.forEach(j=>hits.push({c,s,t:S.board[o][j],dmg:c.atk}));
     }
+    if(d.scream)[i-1,i+1].forEach(j=>{if(j>=0&&j<3&&S.board[s][j])hits.push({c,s,t:S.board[s][j],dmg:1,friend:true})});
   }
   render();
   if(!hits.length)return false;
+  if(fast)log('FAST! THE MAFIOSO SHOOTS FIRST');
   attackers.forEach(([s,i])=>fx(cardOf(s,i),'lunge'+s));
   await sleep(200);
-  const dmgOn=new Map(),faceDmg=[0,0],stuckOn=new Set();
-  let clownHit=false;
+  const dmgOn=new Map(),faceDmg=[0,0],stuckOn=new Set(),heal=[0,0],chomp=[];
   for(const h of hits){
     const d=C[h.c.id],o=1-h.s;
-    if(d.splash)clownHit=true;
-    if(h.face){S.hp[o]-=h.dmg;faceDmg[o]+=h.dmg;if(d.thief)S.bonus[h.s]++;continue}
-    const arm=C[h.t.id].armor||0,dealt=Math.max(0,h.dmg-arm);
+    if(h.face){S.hp[o]-=h.dmg;faceDmg[o]+=h.dmg;if(d.thief)S.bonus[h.s]++;if(d.drain)heal[h.s]+=h.dmg;continue}
+    if(h.t.hp<=0&&!h.friend)continue;
+    const before=h.t.hp;
+    const arm=(C[h.t.id].armor||0)+(guarded(h.t)?1:0),dealt=Math.max(0,h.dmg-arm);
     h.t.hp-=dealt;dmgOn.set(h.t,(dmgOn.get(h.t)||0)+dealt);
-    if(d.poison)h.t.poison=Math.max(h.t.poison,d.poison);
+    if(h.friend)continue;
+    if(d.poison)h.t.poison=Math.max(h.t.poison,d.poison+(S.arena===1?1:0));
     if(d.stick&&dealt>0){h.t.stuck=1;stuckOn.add(h.t)}
     if(d.thief&&dealt>0)S.bonus[h.s]++;
+    if(d.drain&&dealt>0)heal[h.s]+=dealt;
+    if(d.eat&&before>0&&h.t.hp<=0){const g=Math.ceil((C[h.t.id].hp||2)/2);h.c.hp+=g;chomp.push([h.c,g])}
   }
+  for(const s of[0,1])if(heal[s]){S.hp[s]=Math.min(START_HP,S.hp[s]+heal[s]);float(s?$('ehp'):$('php'),'+'+heal[s],'#a6d257')}
   render();
   for(const[t,v]of dmgOn){const s=t.side,i=S.board[s].indexOf(t);if(i<0)continue;const el=slotEl(s,i);
     fx(cardOf(s,i),'hit');float(el,v>0?'-'+v:'BLOCK',v>0?'#ff7a5c':'#9cc9ff');vfx(el,stuckOn.has(t)?'gum':(v>=4?'boom':'spark'))}
+  for(const[c,g]of chomp){const i=S.board[c.side].indexOf(c);if(i>=0)setTimeout(()=>float(slotEl(c.side,i),'CHOMP +'+g,'#a6d257'),350)}
   if(faceDmg[1]){fx($('ehp'),'shake');float($('ehp'),'-'+faceDmg[1],'#ff7a5c');vfx($('ehp'),'spark');mood(2,900)}
   if(faceDmg[0]){fx($('php'),'shake');float($('php'),'-'+faceDmg[0],'#ff7a5c');mood(1,900)}
   await sleep(650);
@@ -755,11 +850,21 @@ async function turn(){
   return true;
 }
 async function cleanup(){
-  let any=false;const honk=[];
-  for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&c.hp<=0){any=true;fx(cardOf(s,i),'die');vfx(slotEl(s,i),'shatter');if(c.id==='clown')honk.push(s);if(s===1)mood(3,800)}}
+  let any=false;const honk=[],bombs=[];
+  for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(!c||c.hp>0)continue;
+    const d=C[c.id];
+    if(d.revive&&!c.revived){c.revived=true;c.hp=1;c.poison=0;any=true;float(slotEl(s,i),'SHE\'S BACK','#e6d6b0');continue}
+    any=true;fx(cardOf(s,i),'die');vfx(slotEl(s,i),'shatter');
+    if(c.id==='clown')honk.push(s);
+    if(d.bomb)bombs.push([1-s,i,d.bomb]);
+    if(d.payout){S.bonus[s]+=3;float(s?$('ehp'):$('php'),'+3 COINS','#f0c95c')}
+    if(s===1)mood(3,800)}
   if(!any)return false;
   await sleep(480);
   for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&c.hp<=0)S.board[s][i]=null}
+  render();
+  if(bombs.length){log('BOOM! THE BELLHOP BLEW UP');for(const[s,i,dm]of bombs){vfx(slotEl(s,i),'boom');const t=S.board[s][i];if(t){t.hp-=dm;fx(cardOf(s,i),'hit');float(slotEl(s,i),'-'+dm,'#ff7a5c')}}
+    render();await sleep(600);await cleanup()}
   for(const s of honk){const o=1-s;S.board[o]=shuffle(S.board[o]);log('HONK! CARDS SWAPPED')}
   render();
   if(honk.length){for(const s of honk){for(let j=0;j<3;j++){vfx(slotEl(1-s,j),'honk');if(S.board[1-s][j])fx(cardOf(1-s,j),'flip')}}await sleep(550)}
@@ -772,14 +877,15 @@ function end(){
   $('endT').textContent=draw?'DRAW':win?'YOU WIN':'BUSTED';
   $('endT').style.color=draw?'var(--paper)':win?'var(--bulb)':'var(--blood)';
   const tr=win?30:draw?0:-15,g=win?25+rnd(16):draw?10:5;P.trophies=Math.max(0,P.trophies+tr);P.gold+=g;
+  const nb=arenaOf(P.trophies);let un='';if(nb>P.best){P.best=nb;P.sel=nb;un=` NEW ARENA UNLOCKED: ${ARENAS[nb].n}! New cards are in your collection.`}
   let cm='';if(win){const e=P.cases.findIndex(c=>!c);if(e>=0){const r=Math.random(),k=r<.55?0:r<.85?1:r<.97?2:3;P.cases[e]={k,at:null};cm=` You won a ${CASES[k].n}!`}else cm=' Your case slots are full.'}
   saveP();
-  $('endD').textContent=`You ${a} HP · Dealer ${b} HP. ${tr>0?'+':''}${tr} trophies, +${g} gold.`+cm;
+  $('endD').textContent=`You ${a} HP · ${ARENAS[S.arena].who} ${b} HP. ${tr>0?'+':''}${tr} trophies, +${g} gold.`+cm+un;
   mood(win?3:1);sc.hidden=false;
 }
 
-openMenu(1);
-S={round:1,hp:[START_HP,START_HP],coins:[3,3],bonus:[0,0],board:[[null,null,null],[null,null,null]],pile:[[],[]],hand:[],sel:null,phase:'idle'};
+applyArena(P.sel);openMenu(1);
+S={arena:P.sel,round:1,hp:[START_HP,START_HP],coins:[3,3],bonus:[0,0],board:[[null,null,null],[null,null,null]],pile:[[],[]],hand:[],sel:null,phase:'idle'};
 render();
 </script>
 <script>if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});</script>
