@@ -313,8 +313,28 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 .mbar b{position:relative;font-weight:400}
 .mbar.full::after{content:"▲";position:absolute;left:-1.5cqw;top:50%;translate:0 -50%;color:#7fe04b;font-size:2.6cqw;animation:hop .7s infinite}
 .cd .lv{left:27%;right:27%;top:84.5%;height:11%;font-family:var(--display);font-weight:700;font-size:10cqw;color:#fff;text-shadow:1px 1px 0 #000,-1px -1px 0 #000}
-#evWheel{position:absolute;left:50%;top:12%;width:66%;translate:-50% 0;z-index:2;filter:drop-shadow(0 10px 16px rgba(0,0,0,.7))}
-#evWheel img{width:100%}
+#pEvents{background:radial-gradient(ellipse at 50% 30%,#1f3a26,#0c160f 70%)!important}
+#rlt{position:absolute;left:3%;right:3%;top:9%;bottom:12.8%;display:flex;flex-direction:column;align-items:center;gap:.8cqh;z-index:2}
+.rwrap{position:relative;width:55%;aspect-ratio:1;flex:none;filter:drop-shadow(0 8px 12px rgba(0,0,0,.7))}
+#rWheel{width:100%;height:100%;image-rendering:pixelated;display:block}
+#rRes{position:absolute;left:50%;top:50%;translate:-50% -50%;min-width:15cqw;padding:1.4cqw 2.4cqw;font-family:var(--display);font-weight:700;font-size:7cqw;color:#fff;border:3px solid #000;text-shadow:2px 2px 0 #000;text-align:center;animation:popin .3s cubic-bezier(.2,1.4,.4,1)}
+#rHist{display:flex;gap:1cqw;min-height:5.4cqw}
+#rHist span{width:5.4cqw;height:5.4cqw;display:grid;place-items:center;font-family:var(--display);font-size:2.4cqw;color:#fff;border:1px solid #000}
+#rInfo{font-family:var(--display);font-size:2.8cqw;color:var(--paper);text-align:center;line-height:1.25;text-shadow:1px 1px 0 #000}
+#rInfo b{color:var(--bulb)}#rInfo .fr{color:#7fe04b}
+#rBoard{width:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.9cqw;padding:1.4cqw;background:#2b1a0f;border:3px solid #000;box-shadow:inset 0 0 0 2px #6b4a24}
+.rc{position:relative;height:5.8cqw;border:1px solid rgba(255,255,255,.18);font-family:var(--display);font-weight:700;font-size:3.2cqw;color:#fff;text-shadow:1px 1px 0 #000;padding:0}
+.rc.rd{background:#a8231a}.rc.bk{background:#151515}.rc.gr{background:#1f7a36;grid-column:1/-1}
+.rc.wide{grid-column:span 3;height:7cqw;font-size:3cqw}
+.rc.hit{outline:3px solid var(--bulb);outline-offset:-1px;z-index:1;animation:hop .5s ease-in-out 3}
+.rc i{position:absolute;right:-1.2cqw;top:-1.6cqw;min-width:5cqw;height:5cqw;padding:0 .6cqw;border-radius:50%;background:radial-gradient(circle,#f0c95c 50%,#9a6f1c 52%,#f0c95c 62%,#7a5418 64%);border:1px solid #000;color:#2a1d00;font-style:normal;font-size:2.2cqw;display:grid;place-items:center;text-shadow:none;z-index:2}
+.rctl{width:100%;display:flex;align-items:center;gap:2cqw}
+#rChips{display:flex;gap:1.2cqw;flex:none}
+.chp{width:9.4cqw;height:9.4cqw;border-radius:50%;font-family:var(--display);font-weight:700;font-size:2.6cqw;color:#fff;border:2px solid #000;text-shadow:1px 1px 0 #000;
+  background:radial-gradient(circle,var(--c) 52%,#eee 53%,#eee 58%,var(--c) 59%);box-shadow:0 0 0 2px #eee inset}
+.chp.on{outline:3px solid var(--bulb);outline-offset:1px;transform:translateY(-10%)}
+#rClear{font-size:2.6cqw;padding:2.4cqw 1.8cqw;flex:none}
+#rSpin{flex:1;min-width:0;justify-content:center;font-size:3.2cqw;padding:2.4cqw 1cqw;white-space:nowrap}
 .panel{position:absolute;left:5%;right:5%;z-index:2;background:rgba(8,6,5,.86);border:2px solid #000;box-shadow:0 0 0 1px rgba(240,201,92,.3);padding:3cqw;text-align:center}
 .panel b{display:block;font-family:var(--display);font-weight:700;font-size:4.2cqw;color:var(--bulb);text-shadow:2px 2px 0 #000;margin-bottom:1.4cqw}
 .panel p{margin:0;font-size:4cqw;line-height:1.05}
@@ -328,7 +348,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 .ra .un{display:flex;gap:1cqw;margin-top:1cqw;flex-wrap:wrap}.ra .un img{width:8cqw;height:8cqw;object-fit:contain;background:#1c140d;border:1px solid #000;image-rendering:pixelated}
 .inp{width:100%;font-family:var(--display);font-size:4.4cqw;padding:2cqw;background:#0e0a08;color:var(--paper);border:2px solid #6b5a3c;text-transform:uppercase}
 .setrow{display:flex;justify-content:space-between;align-items:center;gap:3cqw;padding:2cqw 0;border-bottom:1px solid #3b2a1c;font-family:var(--display);font-size:3.2cqw}
-#spinBox{position:absolute;left:4%;right:4%;top:62%;height:10.4%;display:flex;align-items:center;gap:3cqw;background:rgba(8,6,5,.82);border:2px solid #000;box-shadow:0 0 0 1px rgba(240,201,92,.3);padding:0 3cqw;z-index:2}
+#spinBoxOld{position:absolute;left:4%;right:4%;top:62%;height:10.4%;display:flex;align-items:center;gap:3cqw;background:rgba(8,6,5,.82);border:2px solid #000;box-shadow:0 0 0 1px rgba(240,201,92,.3);padding:0 3cqw;z-index:2}
 #spinBox>img{height:78%}
 .sbt{flex:1;min-width:0;line-height:1.05}.sbt b{display:block;font-family:var(--display);font-weight:700;font-size:3.4cqw;color:var(--bulb)}.sbt span{font-size:3.6cqw}
 #deals{position:absolute;left:3%;right:3%;top:64.6%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3%;z-index:2}
@@ -420,9 +440,13 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
         <div class="panel" style="top:28%"><img src="assets/i_gang.png" alt="" style="width:26%"><b>THE GANG</b><p>Team up with other players, share cards and fight gang wars for the back rooms.</p><span class="soonTag">COMING WITH MULTIPLAYER</span></div>
       </section>
       <section class="pane" id="pEvents">
-        <div id="evWheel"><img src="assets/wheel.png" alt=""></div>
-        <div id="spinBox"><img src="assets/pointer.png" alt="" style="rotate:90deg;height:50%"><div class="sbt"><b>DAILY ROULETTE</b><span id="spinTxt"></span></div><button class="b y" id="spinOpen" type="button">SPIN</button></div>
-        <div class="panel" style="top:75%;padding:2cqw 3cqw"><b style="font-size:3.4cqw;margin:0">BOSS NIGHT</b><p style="font-size:3.6cqw">A dealer with twisted rules and a golden suitcase prize.</p><span class="soonTag">COMING SOON</span></div>
+        <div id="rlt">
+          <div class="rwrap"><canvas id="rWheel" width="220" height="220" aria-label="Roulette wheel"></canvas><div id="rRes" hidden></div></div>
+          <div id="rHist" aria-label="Last results"></div>
+          <div id="rInfo"></div>
+          <div id="rBoard"></div>
+          <div class="rctl"><div id="rChips"></div><button class="b r" id="rClear" type="button">CLEAR</button><button class="b y" id="rSpin" type="button">SPIN</button></div>
+        </div>
       </section>
     </div>
     <div id="topbar"><div class="lvl" id="pLvl">1</div><div class="xpw"><div class="xp"><i id="xpI"></i><b id="xpB">0/100</b></div></div>
@@ -584,7 +608,7 @@ function renderTimers(){
   $('passT').textContent=ready?'Ready!':fmt(left/1000);$('passBtn').classList.toggle('ready',ready);$('passDot').hidden=!ready;
   const nd=DAY-(Date.now()%DAY);$('evT').textContent=fmt(nd/1000);$('dealT').textContent='new in '+fmt(nd/1000);
 }
-$('passBtn').onclick=()=>setTab(4);$('evBtn').onclick=()=>setTab(0);
+$('passBtn').onclick=()=>{setTab(4);RL.refresh()};$('evBtn').onclick=()=>setTab(0);
 $('curG').onclick=$('curC').onclick=()=>setTab(0);
 $('prof').onclick=()=>{pop(`<h3>YOUR NAME</h3><p style="text-align:center">What should the Dealer call you?</p><input class="inp" id="nmIn" maxlength="12" value="${(P.name||'STRANGER').replace(/"/g,'')}" aria-label="Your name"><div class="btns"><button class="b y" id="nmOk" type="button">SAVE</button></div>`);
   const inp=$('nmIn');inp.focus();inp.select();const ok=()=>{const v=inp.value.replace(/[^A-Za-z0-9 _.\-]/g,'').trim().toUpperCase().slice(0,12);P.name=v||'STRANGER';saveP();closePop();renderTop()};
@@ -678,8 +702,6 @@ function dealsNow(){const day=Math.floor(Date.now()/DAY);if(!P.deals||P.deals.da
   P.deals={day,items:ids.map((id,i)=>({id,q:q[i],p:q[i]*(8+C[id].cost*4),sold:false})).concat([{caseK:3,p:60,sold:false}])};saveP()}return P.deals}
 function renderShop(){
   const left=DAY-(Date.now()-P.spin);
-  $('spinTxt').textContent=left<=0?'Free spin ready!':`Next free spin in ${fmt(left/1000)}`;
-  $('spinOpen').disabled=left>0;
   const box=$('deals');box.innerHTML='';
   dealsNow().items.forEach((it,i)=>{const el=document.createElement('div');el.className='deal'+(it.sold?' sold':'');
     if(it.caseK!=null)el.innerHTML=`<div class="cw"><div class="caseimg"><img src="assets/case${it.caseK}.png" alt=""></div></div><div class="price" style="background:linear-gradient(#9a6bd0,#6a3fa0)"><img src="assets/m_i_chips.png" alt="">${it.sold?'SOLD':it.p}</div>`;
@@ -689,28 +711,114 @@ function renderShop(){
 function buy(i){const it=P.deals.items[i];if(it.sold)return;
   if(it.caseK!=null){const e=P.cases.findIndex(c=>!c);if(e<0){toast('CASE SLOTS FULL');return}if(P.chips<it.p){toast('NOT ENOUGH CHIPS');return}P.chips-=it.p;P.cases[e]={k:it.caseK,at:null};it.sold=true;saveP();toast('GOLDEN SUITCASE ADDED');renderMenu();return}
   if(P.gold<it.p){toast('NOT ENOUGH GOLD');return}P.gold-=it.p;P.cards[it.id].n+=it.q;it.sold=true;saveP();toast(`+${it.q} ${C[it.id].n.toUpperCase()}`);renderMenu()}
-const PRIZES=[{t:'50 GOLD',g:50,w:22},{t:'150 GOLD',g:150,w:10},{t:'10 CHIPS',c:10,w:14},{t:'25 CHIPS',c:25,w:5},{t:'5 CARDS',cards:5,w:20},{t:'LEATHER BRIEFCASE',k:1,w:10},{t:'STEEL SAFE',k:2,w:4},{t:'NOTHING. THE HOUSE WINS.',w:15}];
-$('spinOpen').onclick=()=>{
-  pop(`<h3>DAILY ROULETTE</h3><div class="wheelBox"><img class="ptr" src="assets/pointer.png" alt=""><div class="wheelWrap"><div class="wheelSq" id="wsq"><img src="assets/wheel.png" alt=""></div></div></div><p style="text-align:center" id="wres">One free spin a day. Feeling lucky?</p><div class="btns"><button class="b y" id="wGo" type="button">SPIN</button></div>`);
-  $('wGo').onclick=async()=>{
-    if(DAY-(Date.now()-P.spin)>0)return;$('wGo').disabled=true;P.spin=Date.now();
-    let tot=PRIZES.reduce((s,p)=>s+p.w,0),r=Math.random()*tot,pr=PRIZES[0];for(const p of PRIZES){if((r-=p.w)<0){pr=p;break}}
-    const deg=360*6+rnd(360);
-    await $('wsq').animate([{transform:'rotate(0deg)'},{transform:`rotate(${deg}deg)`}],{duration:3600,easing:'cubic-bezier(.12,.6,.15,1)',fill:'forwards'}).finished.catch(()=>{});
-    let msg=pr.t;
-    if(pr.g)P.gold+=pr.g;if(pr.c)P.chips+=pr.c;
-    if(pr.cards){const got=grantCards(pr.cards);msg+=': '+Object.keys(got).map(id=>`${got[id]}x ${C[id].n}`).join(', ')}
-    if(pr.k!=null){const e=P.cases.findIndex(c=>!c);if(e>=0)P.cases[e]={k:pr.k,at:null};else{P.gold+=60;msg+=' (slots full: +60 gold)'}}
-    saveP();$('wres').innerHTML=`<b style="font-family:var(--display);color:var(--bulb)">${msg}</b>`;
-    const g=$('wGo');g.disabled=false;g.textContent='COLLECT';g.onclick=()=>{closePop();renderMenu()};renderTop();
+/* ---------- roulette ---------- */
+const RL=(()=>{
+  const ORDER=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+  const REDS=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+  const col=n=>n===0?'gr':REDS.has(n)?'rd':'bk';
+  const CHIPS=[{v:10,c:'#2f6fb0'},{v:25,c:'#3c8a2c'},{v:50,c:'#b8321f'},{v:100,c:'#222'}];
+  const FREE=25;
+  let chip=25,bets={},spinning=false,last=null,hist=[];
+  try{hist=JSON.parse(localStorage.getItem('dd-rh')||'[]')}catch(_){}
+  const cv=$('rWheel'),g=cv.getContext('2d'),W=220,C=W/2,SEG=Math.PI*2/37;
+  let wA=0,bA=-Math.PI/2,bR=96,showBall=false,raf=null,idleT=performance.now();
+  const freeReady=()=>DAY-(Date.now()-P.spin)<=0;
+  const total=()=>Object.values(bets).reduce((a,b)=>a+b,0);
+  function draw(){
+    g.clearRect(0,0,W,W);
+    // outer wood
+    g.fillStyle='#2a160a';g.beginPath();g.arc(C,C,108,0,7);g.fill();
+    g.fillStyle='#5a3418';g.beginPath();g.arc(C,C,103,0,7);g.fill();
+    g.fillStyle='#3a2010';g.beginPath();g.arc(C,C,98,0,7);g.fill();
+    // ball track
+    g.fillStyle='#6b4524';g.beginPath();g.arc(C,C,94,0,7);g.fill();
+    g.fillStyle='#4a2c14';g.beginPath();g.arc(C,C,84,0,7);g.fill();
+    // pockets
+    for(let i=0;i<37;i++){const n=ORDER[i],a0=wA+i*SEG-SEG/2-Math.PI/2;
+      g.fillStyle=n===0?'#1f7a36':REDS.has(n)?'#a8231a':'#141414';
+      g.beginPath();g.moveTo(C,C);g.arc(C,C,82,a0,a0+SEG);g.closePath();g.fill();
+      g.strokeStyle='#c99a32';g.lineWidth=1;g.beginPath();g.moveTo(C+Math.cos(a0)*50,C+Math.sin(a0)*50);g.lineTo(C+Math.cos(a0)*82,C+Math.sin(a0)*82);g.stroke();
+      const am=a0+SEG/2;g.save();g.translate(C+Math.cos(am)*73,C+Math.sin(am)*73);g.rotate(am+Math.PI/2);
+      g.fillStyle=n===0||!REDS.has(n)?'#f3e6c4':'#fff';g.font='bold 8px monospace';g.textAlign='center';g.textBaseline='middle';g.fillText(n,0,0);g.restore();}
+    // pocket floor ring
+    g.fillStyle='#2b1a0f';g.beginPath();g.arc(C,C,64,0,7);g.fill();
+    for(let i=0;i<37;i++){const a0=wA+i*SEG-SEG/2-Math.PI/2;g.strokeStyle='#8a6a2a';g.beginPath();g.moveTo(C+Math.cos(a0)*52,C+Math.sin(a0)*52);g.lineTo(C+Math.cos(a0)*64,C+Math.sin(a0)*64);g.stroke()}
+    // cone + turret
+    const gr=g.createRadialGradient(C-10,C-10,4,C,C,52);gr.addColorStop(0,'#8a5a2a');gr.addColorStop(1,'#3a2010');
+    g.fillStyle=gr;g.beginPath();g.arc(C,C,51,0,7);g.fill();
+    g.save();g.translate(C,C);g.rotate(wA);g.fillStyle='#c99a32';g.strokeStyle='#5a3a10';
+    for(let k=0;k<4;k++){g.rotate(Math.PI/2);g.fillRect(-2.5,-34,5,30);g.beginPath();g.arc(0,-34,4.5,0,7);g.fill()}
+    g.restore();
+    g.fillStyle='#e8c060';g.beginPath();g.arc(C,C,11,0,7);g.fill();g.fillStyle='#8a6420';g.beginPath();g.arc(C,C,5,0,7);g.fill();
+    // ball
+    if(showBall){const x=C+Math.cos(bA)*bR,y=C+Math.sin(bA)*bR;g.fillStyle='rgba(0,0,0,.45)';g.beginPath();g.arc(x+1.5,y+2,4.2,0,7);g.fill();
+      g.fillStyle='#f4f1ea';g.beginPath();g.arc(x,y,4,0,7);g.fill();g.fillStyle='#fff';g.fillRect(x-2,y-2,1.6,1.6)}
+    // dealer marker
+    g.fillStyle='#f0c95c';g.beginPath();g.moveTo(C,6);g.lineTo(C-5,0);g.lineTo(C+5,0);g.closePath();g.fill();
+  }
+  function idle(t){if(!spinning){wA+=(t-idleT)*0.00018;idleT=t;draw()}raf=requestAnimationFrame(idle)}
+  function board(){
+    const b=$('rBoard');b.innerHTML='';
+    const cell=(key,label,cls)=>{const e=document.createElement('button');e.type='button';e.className='rc '+cls;e.textContent=label;e.dataset.k=key;
+      if(bets[key])e.innerHTML+=`<i>${bets[key]}</i>`;if(last!=null&&(key==='n'+last||(key==='red'&&col(last)==='rd')||(key==='black'&&col(last)==='bk')))e.classList.add('hit');
+      e.onclick=()=>place(key);e.oncontextmenu=ev=>{ev.preventDefault();delete bets[key];refresh()};b.appendChild(e)};
+    cell('n0','0  ·  GREEN ×36','gr');
+    for(let n=1;n<=36;n++)cell('n'+n,n,col(n));
+    cell('red','RED ×2','rd wide');cell('black','BLACK ×2','bk wide');
+  }
+  function chips(){const c=$('rChips');c.innerHTML='';CHIPS.forEach(ch=>{const e=document.createElement('button');e.type='button';e.className='chp'+(ch.v===chip?' on':'');e.style.setProperty('--c',ch.c);e.textContent=ch.v;e.setAttribute('aria-label',`Bet ${ch.v} gold`);e.onclick=()=>{chip=ch.v;chips()};c.appendChild(e)})}
+  function info(){
+    const t=total(),fr=freeReady(),cost=Math.max(0,t-(fr?FREE:0));
+    $('rInfo').innerHTML=`${fr?`<span class="fr">FREE SPIN: the first ${FREE} gold is on the house</span><br>`:`Next free spin in ${fmt((DAY-(Date.now()-P.spin))/1000)}<br>`}Your bet <b>${t}</b> · Number pays <b>×36</b> · Red/Black pays <b>×2</b>`;
+    const sp=$('rSpin');sp.disabled=spinning||t===0||cost>P.gold;sp.textContent=spinning?'NO MORE BETS…':t===0?'PLACE A BET':cost>P.gold?'NOT ENOUGH GOLD':`SPIN · ${cost?cost+' GOLD':'FREE'}`;
+    $('rClear').disabled=spinning||t===0;
+    const h=$('rHist');h.innerHTML=hist.map(n=>`<span style="background:${n===0?'#1f7a36':REDS.has(n)?'#a8231a':'#151515'}">${n}</span>`).join('');
+  }
+  function refresh(){board();info()}
+  function place(k){if(spinning)return;const t=total(),fr=freeReady();if(Math.max(0,t+chip-(fr?FREE:0))>P.gold){toast('NOT ENOUGH GOLD');return}
+    if(last!=null){last=null;$('rRes').hidden=true}
+    bets[k]=(bets[k]||0)+chip;refresh()}
+  $('rClear').onclick=()=>{if(spinning)return;bets={};last=null;$('rRes').hidden=true;refresh()};
+  const easeOut=t=>1-Math.pow(1-t,3);
+  $('rSpin').onclick=()=>{
+    const t=total();if(spinning||!t)return;const fr=freeReady(),cost=Math.max(0,t-(fr?FREE:0));if(cost>P.gold)return;
+    P.gold-=cost;if(fr)P.spin=Date.now();saveP();renderTop();
+    spinning=true;$('rRes').hidden=true;last=null;refresh();
+    const res=Math.floor(Math.random()*37),idx=ORDER.indexOf(res);
+    const D=5600,t0=performance.now(),w0=wA,wSpin=Math.PI*2*(2.2+Math.random()*.6);
+    const wEnd=w0+wSpin,bEnd=wEnd+idx*SEG-Math.PI/2,bStart=bEnd+Math.PI*2*(5+Math.random());
+    showBall=true;
+    function step(now){let u=Math.min(1,(now-t0)/D);const e=easeOut(u);
+      wA=w0+wSpin*e;
+      const free=bEnd+(bStart-bEnd)*(1-easeOut(Math.min(1,u/0.86)))-(wEnd-wA)*0; 
+      const ride=wA+idx*SEG-Math.PI/2;
+      const s=u<.7?0:Math.min(1,(u-.7)/.2);
+      bA=free*(1-s)+ride*s;
+      bR=u<.55?89:u<.8?89-(89-70)*((u-.55)/.25)+Math.abs(Math.sin(u*60))*4*(1-(u-.55)/.25):70;
+      draw();
+      if(u<1)requestAnimationFrame(step);else finish(res)}
+    requestAnimationFrame(step);
+    try{SND.duck(.35,.4)}catch(_){}
   };
-};
+  function finish(res){
+    spinning=false;last=res;hist=[res,...hist].slice(0,9);try{localStorage.setItem('dd-rh',JSON.stringify(hist))}catch(_){}
+    let win=0;for(const k in bets){const v=bets[k];if(k==='n'+res)win+=v*36;else if(k==='red'&&col(res)==='rd')win+=v*2;else if(k==='black'&&col(res)==='bk')win+=v*2}
+    P.gold+=win;addXP(win?8:3);saveP();renderTop();
+    const r=$('rRes');r.hidden=false;r.style.background=res===0?'#1f7a36':REDS.has(res)?'#a8231a':'#151515';r.textContent=res;
+    setTimeout(()=>{toast(win?`${res} ${res===0?'GREEN':REDS.has(res)?'RED':'BLACK'} · YOU WIN ${win} GOLD!`:`${res} ${res===0?'GREEN':REDS.has(res)?'RED':'BLACK'} · THE HOUSE WINS`);if(win)SND.sting('win',.7)},250);
+    try{SND.duck(.6,1)}catch(_){}
+    bets={};refresh();
+  }
+  chips();refresh();draw();requestAnimationFrame(t=>{idleT=t;idle(t)});
+  return{refresh:info};
+})();
+
 
 /* ---------- popup ---------- */
 function pop(html,noX){const p=$('pop');p.innerHTML=`<div class="box">${noX?'':'<button class="x" type="button" aria-label="Close" id="popX"><img src="assets/m_i_x.png" alt=""></button>'}${html}</div>`;p.hidden=false;const x=$('popX');if(x)x.onclick=closePop}
 function closePop(){$('pop').hidden=true;$('pop').innerHTML=''}
 $('pop').addEventListener('click',e=>{if(e.target.id==='pop'&&$('popX'))closePop()});
-setInterval(()=>{if(!$('menu').hidden){renderCases();renderShop();renderTimers()}},1000);
+setInterval(()=>{if(!$('menu').hidden){renderCases();renderShop();renderTimers();if(tab===4)RL.refresh()}},1000);
 
 /* ---------- sound ---------- */
 const SND=(()=>{
