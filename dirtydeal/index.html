@@ -93,6 +93,19 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 @keyframes ecg{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .winrain{width:20%;height:17.8%;opacity:.45;background:repeating-linear-gradient(100deg,transparent 0 7px,rgba(190,210,235,.4) 7px 8px,transparent 8px 19px);background-size:100% 40px;animation:rain .4s linear infinite}
 .winflash{width:20%;height:17.8%;background:rgba(220,230,255,.85);mix-blend-mode:screen;opacity:0;animation:bolt 11s infinite steps(1)}
+.dropw.blood{background:linear-gradient(rgba(120,10,8,.2),rgba(150,18,12,.95));width:.6%}
+.coldl{width:46%;aspect-ratio:1.4;translate:-50% -50%;background:radial-gradient(ellipse,rgba(210,235,255,.42),rgba(170,200,230,.12) 40%,transparent 70%);mix-blend-mode:screen;animation:tube 6.1s infinite steps(1)}
+.fog{width:130%;height:6%;translate:-50% -50%;background:radial-gradient(ellipse at 30% 50%,rgba(210,225,235,.22),transparent 60%),radial-gradient(ellipse at 75% 60%,rgba(210,225,235,.18),transparent 55%);animation:fog 14s ease-in-out infinite alternate}
+.fog.f2{animation-duration:19s;animation-direction:alternate-reverse;opacity:.7}
+@keyframes fog{from{transform:translateX(-8%)}to{transform:translateX(8%)}}
+.cbulb{width:7%;aspect-ratio:1;translate:-50% -50%;background:radial-gradient(circle,var(--c) 0 8%,color-mix(in srgb,var(--c) 35%,transparent) 20%,transparent 60%);mix-blend-mode:screen;animation:candle 1.6s infinite steps(1)}
+.cbulb.dead{animation-name:deadb}
+@keyframes deadb{0%,100%{opacity:0}46%{opacity:.9}49%{opacity:0}74%{opacity:.6}76%{opacity:0}}
+.mouth{width:26%;height:16%;translate:-50% -50%;background:radial-gradient(ellipse,rgba(0,0,0,.9),transparent 70%);opacity:.3}
+.glint{width:8%;height:24%;translate:-50% -50%;overflow:hidden}
+.glint::after{content:"";position:absolute;left:-60%;top:0;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:glint 6s ease-in-out infinite}
+.glint.g2::after{animation-delay:-3s}
+@keyframes glint{0%,70%{left:-60%}85%{left:120%}100%{left:120%}}
 .eyes{width:1.8%;height:.5%;display:flex;justify-content:space-between;animation:eyes 7s infinite steps(1)}
 .eyes::before,.eyes::after{content:"";width:28%;height:100%;background:#ff3020;box-shadow:0 0 4px 1px rgba(255,40,20,.8)}
 @keyframes eyes{0%{opacity:1}31%{opacity:0}33%{opacity:1}60%{opacity:1}61%{opacity:0}80%{opacity:0}81%{opacity:1}}
@@ -616,7 +629,9 @@ const ARENAS=[
  {t:0,n:'THE BACK ROOM',who:'The Dealer',pre:'dealer',bg:'table.jpg',tw:'',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:12.6,dh:23.8,gl:[22.1,13.8]}},
  {t:100,n:'THE DRAIN',who:'The Croc',pre:'d2_',bg:'table2.jpg',tw:'Poison lasts 1 turn longer down here.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:12.4,dh:23.8,gl:[14,24]}},
  {t:250,n:'THE DEBT CELLAR',who:'The Collector',pre:'d3_',bg:'table3.jpg',tw:'The light shorts out: a random card may take 3.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:11.6,dh:24.6,gl:[50,8]}},
- {t:500,n:'THE PRIVATE WARD',who:'The Owner',pre:'d4_',bg:'table4.jpg',tw:"The Owner's cards start with +1 shield.",g:{tilt:44,shift:0,r1w:14,r1t:39.4,r1:[27.9,43,58.1],r0w:18,r0t:50.2,r0:[21.2,41,60.8],dt:20,dh:22,gl:[51,24]}}];
+ {t:500,n:'THE PRIVATE WARD',who:'The Owner',pre:'d4_',bg:'table4.jpg',tw:"The Owner's cards start with +1 shield.",g:{tilt:44,shift:0,r1w:14,r1t:39.4,r1:[27.9,43,58.1],r0w:18,r0t:50.2,r0:[21.2,41,60.8],dt:20,dh:22,gl:[51,24]}},
+ {t:750,n:'THE SLAUGHTERHOUSE',who:'The Butcher',pre:'d5_',bg:'table5.jpg',tw:'Every card that dies deals 1 damage to its owner.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:10.6,dh:26,gl:[50,7]}},
+ {t:1000,n:'THE FUNHOUSE',who:'The Ringmaster',pre:'d6_',bg:'table6.jpg',tw:'Your cards get shuffled into random slots every round.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:11.2,dh:25.4,gl:[50,6]}}];
 let TILT=38;
 function applyArena(k){
   const A=ARENAS[k],g=A.g,st=$('stage');
@@ -929,7 +944,7 @@ const AMB=(()=>{
   const el=(cls,x,y,html)=>{const e=document.createElement('div');e.className=cls;e.style.left=x+'%';e.style.top=y+'%';if(html)e.innerHTML=html;box().appendChild(e);return e};
   const flies=(x,y,n,r,parent)=>{const o=document.createElement('div');o.className='orb';o.style.left=x+'%';o.style.top=y+'%';o.style.position='absolute';
     for(let i=0;i<n;i++){const f=document.createElement('i');f.style.setProperty('--d',(1.1+i*.37)+'s');f.style.setProperty('--r',(r+i*5)+'px');f.style.animationDelay=(-i*.4)+'s';o.appendChild(f)}(parent||box()).appendChild(o);return o};
-  function drip(x,y0,y1,rip){const d=el('dropw',x,y0);d.animate([{top:y0+'%',opacity:.2},{top:y0+'%',opacity:1,offset:.25},{top:y1+'%',opacity:1}],{duration:900,easing:'cubic-bezier(.6,0,1,1)'}).finished.then(()=>{d.remove();if(rip)ripple(x,y1+.4)}).catch(()=>d.remove())}
+  function drip(x,y0,y1,rip,cls){const d=el('dropw'+(cls?' '+cls:''),x,y0);d.animate([{top:y0+'%',opacity:.2},{top:y0+'%',opacity:1,offset:.25},{top:y1+'%',opacity:1}],{duration:900,easing:'cubic-bezier(.6,0,1,1)'}).finished.then(()=>{d.remove();if(rip)ripple(x,y1+.4)}).catch(()=>d.remove())}
   function ripple(x,y,big){const r=el('rip',x,y);if(big)r.style.width='9%';r.animate([{scale:'.15',opacity:1},{scale:'1',opacity:0}],{duration:1300,easing:'ease-out'}).finished.then(()=>r.remove()).catch(()=>r.remove())}
   function splash(x,y){const r=el('splash',x,y);r.animate([{scale:'.2',opacity:1},{scale:'1',opacity:0}],{duration:420,easing:'ease-out'}).finished.then(()=>r.remove()).catch(()=>r.remove())}
   function mote(){const x=8+Math.random()*50,y=4+Math.random()*34,m=el('mote',x,y);const dx=(Math.random()-.5)*4,dy=-1-Math.random()*3;
@@ -971,6 +986,14 @@ const AMB=(()=>{
       every(260,mote,200);
       every(1700,()=>{drip(20.6,24.8,28.5,false);setTimeout(()=>drip(29,26.4,30,false),600)},500);
       every(9000,()=>{const d=$('dealer');d.animate([{translate:'0 0'},{translate:'-1px 1px'},{translate:'1px 0'},{translate:'-1px 1px'},{translate:'0 0'}],{duration:500,iterations:2})},6000)}
+    if(k===4){el('coldl',50,6.6);el('fog',50,33.5);el('fog f2',50,31.5);
+      const hooks=[5,10,15,20,25,75,80,85,90,95];
+      every(1500,()=>{const x=hooks[Math.floor(Math.random()*hooks.length)]+(Math.random()-.5)*2;drip(x,33+Math.random()*3,38.5,false,'blood')},1300);
+      every(6200,()=>{const f=$('flick');f.animate([{opacity:0},{opacity:.85},{opacity:.05},{opacity:.7},{opacity:0}],{duration:460,easing:'steps(5)'})},5000)}
+    if(k===5){const B=[[12.4,6.7,'#ff4030'],[23,5.2,'#ffd040'],[30.6,6.4,'#60ff60'],[37.8,4,'#ffd040'],[43.9,2.2,'#ff4030'],[64.5,6.1,'#ffd040'],[71,4.4,'#ff4030'],[76.8,9.1,'#60ff60'],[84.6,8.6,'#ffd040'],[91.8,10.2,'#ff4030']];
+      B.forEach((b,n)=>{const e=el('cbulb',b[0],b[1]);e.style.setProperty('--c',b[2]);e.style.animationDuration=(1.3+((n*7)%5)*.45)+'s';e.style.animationDelay=(-n*.37)+'s';if(n%4===1)e.classList.add('dead')});
+      el('mouth',50,24.5);el('glint',5,27);el('glint g2',95.5,27);
+      every(7000,()=>{const m=box().querySelector('.mouth');if(m)m.animate([{opacity:.3},{opacity:.95},{opacity:.3}],{duration:1800,easing:'ease-in-out'})},5000)}
   }
   return{set,_run:runner,_rat:ratRun};
 })();
@@ -1169,6 +1192,7 @@ async function battle(){
   render();log('THE CROUPIER FLIPS…');await sleep(250);
   await flipAll();
   await sleep(300);
+  if(S.arena===5&&S.board[0].filter(Boolean).length>1){log('THE RINGMASTER SHUFFLES YOUR CARDS');for(let j=0;j<3;j++)vfx(slotEl(0,j),'honk');await sleep(350);S.board[0]=shuffle(S.board[0]);render();for(let j=0;j<3;j++)if(S.board[0][j])fx(cardOf(0,j),'flip');mood(1,900);await sleep(600)}
   for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&C[c.id].spell){S.board[s][i]=null;render();await cast(c,s)}}
   for(const s of[0,1])for(let i=0;i<3;i++){
     const c=S.board[s][i];if(!c||!c.fresh)continue;
@@ -1273,6 +1297,7 @@ async function cleanup(){
     const d=C[c.id];
     if(d.revive&&!c.revived){c.revived=true;c.hp=1;c.poison=0;any=true;float(slotEl(s,i),'SHE\'S BACK','#e6d6b0');continue}
     any=true;fx(cardOf(s,i),'die');vfx(slotEl(s,i),'shatter');
+    if(S.arena===4&&!d.token){S.hp[s]-=1;float(s?$('ehp'):$('php'),'-1 BLOOD','#c43a2a')}
     if(c.id==='clown')honk.push(s);
     if(d.bomb)bombs.push([1-s,i,d.bomb]);
     if(d.payout){S.bonus[s]+=3;float(s?$('ehp'):$('php'),'+3 COINS','#f0c95c')}
