@@ -241,7 +241,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 #deckBtn .cdw{width:52%}#deckBtn .cdw .cd{height:auto;width:100%}
 #deckBtn .cn,#deckBtn .st,#deckBtn .cost,#deckBtn .lv{display:none}
 #roadBtn img{width:52%}
-#battleBtn{position:absolute;left:50%;top:75.4%;width:42%;translate:-50% 0;z-index:4;animation:breathe 1.8s ease-in-out infinite}
+#battleBtn{position:absolute;left:50%;top:71.6%;width:48%;translate:-50% 0;z-index:4;animation:breathe 1.8s ease-in-out infinite}
 .lvl{width:9.5cqw;aspect-ratio:78/80;flex:none;background:url(assets/m_i_level.png) center/contain no-repeat;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:3.4cqw;color:#fff;text-shadow:1px 1px 0 #000}
 .who{flex:1;min-width:0;line-height:1;display:flex;flex-direction:column;gap:.6cqw}
 .who b{font-family:var(--display);font-size:2.8cqw;color:var(--paper);font-weight:700}
@@ -276,7 +276,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 #battleBtn img{width:100%}
 @keyframes breathe{50%{transform:scale(1.045)}}
 #deckPeek{position:absolute;left:50%;top:51.2%;translate:-50% 0;font-family:var(--display);font-size:2.4cqw;color:var(--paper);background:rgba(8,6,5,.75);padding:.6cqw 2cqw;white-space:nowrap;z-index:2}
-#cases{position:absolute;left:3%;right:3%;top:63.4%;height:10.6%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2%;z-index:2}
+#cases{position:absolute;left:3%;right:3%;top:59.4%;height:11.2%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2%;z-index:2}
 .case{position:relative;background:rgba(8,6,5,.78);border:2px solid #000;box-shadow:inset 0 0 0 2px #3b2a1c;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 .5cqw .8cqh;cursor:pointer;overflow:hidden}
 .case img{position:absolute;top:6%;left:50%;translate:-50% 0;width:78%}
 .case small{position:relative;font-family:var(--display);font-size:2.2cqw;color:var(--paper);text-align:center;line-height:1.15;text-shadow:1px 1px 0 #000,-1px -1px 0 #000;font-variant-numeric:tabular-nums}
@@ -406,14 +406,8 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
         <div id="qbtns"><button class="qb" id="qFriends" type="button" aria-label="Friends"><svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><g fill="#f0c95c"><rect x="3" y="2" width="4" height="4"/><rect x="1" y="7" width="8" height="6"/><rect x="10" y="4" width="3" height="3"/><rect x="9" y="8" width="6" height="5" opacity=".7"/></g></svg></button><button class="qb" id="qRules" type="button" aria-label="How to play"><svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><rect x="3" y="1" width="10" height="14" fill="#f0c95c"/><g fill="#1a120c"><rect x="5" y="4" width="6" height="1"/><rect x="5" y="7" width="6" height="1"/><rect x="5" y="10" width="4" height="1"/></g></svg></button><button class="qb" id="qMenu" type="button" aria-label="Settings"><svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><g fill="#f0c95c"><rect x="2" y="3" width="12" height="2"/><rect x="2" y="7" width="12" height="2"/><rect x="2" y="11" width="12" height="2"/></g></svg></button></div>
         <button id="passBtn" type="button"><img src="assets/wheel.png" alt=""><span><b>FREE ROULETTE</b><em id="passT">Ready!</em></span><i class="dot" id="passDot">!</i></button>
         <button id="evBtn" type="button" aria-label="Black Market deals"><div class="ring"><img src="assets/coins.png" alt=""></div><em id="evT">0h</em></button>
-        <button class="arw2" id="arL" type="button" aria-label="Previous arena">‹</button><button class="arw2" id="arR" type="button" aria-label="Next arena">›</button>
-        <div id="arenaBox" role="button" tabindex="0" aria-label="Trophy road"><div class="mini"><div class="mbg" id="abBg"></div><img class="mdl" id="abDl" alt=""></div><img class="lk" src="assets/u_lock.png" alt=""><div class="ttl"><b id="abT">ARENA 1</b><span id="abN"></span></div></div>
-        <div id="arenaProg"><div class="prog"><i id="abP"></i><em id="abPt"></em></div></div>
-        <div id="arenaTw"></div>
         <div id="cases"></div>
-        <button class="brow side" id="deckBtn" type="button"><div class="cdw" id="deckCard"></div><span id="deckLbl">DECK 1</span></button>
         <button id="battleBtn" type="button" aria-label="Battle"><img src="assets/m_btn_battle.png" alt=""></button>
-        <button class="brow side" id="roadBtn" type="button"><img src="assets/m_i_trophy.png" alt=""><span>TROPHY ROAD</span></button>
       </section>
       <section class="pane" id="pGang">
         <div class="panel" style="top:28%"><img src="assets/m_i_wings.png" alt="" style="width:26%"><b>THE GANG</b><p>Team up with other players, share cards and fight gang wars for the back rooms.</p><span class="soonTag">COMING WITH MULTIPLAYER</span></div>
@@ -572,17 +566,8 @@ function renderTop(){P.lvl=P.lvl||1;$('pLvl').textContent=P.lvl;const n=xpNeed(P
 /* ---------- battle tab ---------- */
 const tc=x=>x.replace(/\w\S*/g,w=>w[0]+w.slice(1).toLowerCase());
 function renderBattle(){
-  const k=P.sel,a=ARENAS[k],lock=k>P.best,cur=arenaOf(P.trophies),nx=ARENAS[cur+1];
-  const pct=lock?Math.min(100,P.trophies/a.t*100):nx?Math.min(100,(P.trophies-ARENAS[cur].t)/(nx.t-ARENAS[cur].t)*100):100;
-  const box=$('arenaBox');box.classList.toggle('lockd',lock);
-  $('abBg').style.backgroundImage=`url(assets/${a.bg})`;$('abBg').style.top=a.g.shift+'%';
-  const dl=$('abDl');dl.src=`assets/${a.pre}0.png`;dl.style.top=a.g.dt+'%';dl.style.height=a.g.dh+'%';
-  $('abT').textContent=`ARENA ${k+1}${lock?' · LOCKED':''}`;$('abN').textContent=`${tc(a.n)} · ${a.who}`;
-  $('abP').style.width=pct+'%';$('abPt').textContent=lock?`Reach ${a.t} trophies`:nx?`${P.trophies} / ${nx.t}`:'TOP ARENA';
-  $('arenaTw').textContent=a.tw;
-  $('arL').disabled=k===0;$('arR').disabled=k===ARENAS.length-1;
-  $('battleBtn').disabled=lock;
-  $('deckCard').innerHTML=cardHTML(deckNow()[0],null,P.cards[deckNow()[0]].l);$('deckLbl').textContent=`DECK ${P.di+1}`;
+  P.sel=P.best;
+  $('battleBtn').disabled=false;
   renderTimers();renderCases();
 }
 function renderTimers(){
@@ -590,12 +575,8 @@ function renderTimers(){
   $('passT').textContent=ready?'Ready!':fmt(left/1000);$('passBtn').classList.toggle('ready',ready);$('passDot').hidden=!ready;
   const nd=DAY-(Date.now()%DAY);$('evT').textContent=fmt(nd/1000);$('dealT').textContent='new in '+fmt(nd/1000);
 }
-$('arL').onclick=()=>{P.sel=Math.max(0,P.sel-1);saveP();renderBattle()};
-$('arR').onclick=()=>{P.sel=Math.min(ARENAS.length-1,P.sel+1);saveP();renderBattle()};
 $('passBtn').onclick=()=>setTab(4);$('evBtn').onclick=()=>setTab(0);
 $('curG').onclick=$('curC').onclick=()=>setTab(0);
-$('deckBtn').onclick=()=>setTab(1);
-$('roadBtn').onclick=$('arenaBox').onclick=()=>trophyRoad();
 $('prof').onclick=()=>{pop(`<h3>YOUR NAME</h3><p style="text-align:center">What should the Dealer call you?</p><input class="inp" id="nmIn" maxlength="12" value="${(P.name||'STRANGER').replace(/"/g,'')}" aria-label="Your name"><div class="btns"><button class="b y" id="nmOk" type="button">SAVE</button></div>`);
   const inp=$('nmIn');inp.focus();inp.select();const ok=()=>{const v=inp.value.replace(/[^A-Za-z0-9 _.\-]/g,'').trim().toUpperCase().slice(0,12);P.name=v||'STRANGER';saveP();closePop();renderTop()};
   $('nmOk').onclick=ok;inp.onkeydown=e=>{if(e.key==='Enter')ok()}};
