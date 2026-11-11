@@ -61,6 +61,11 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 #info strong{color:var(--paper);font-weight:400;font-family:var(--display);font-size:2.4cqw;letter-spacing:.04em;display:block}
 #info em{font-style:normal;color:var(--muted)}
 
+.snd{position:absolute;z-index:7;width:8.4cqw;height:8.4cqw;display:grid;place-items:center;background:rgba(8,6,5,.7);border:2px solid #000;box-shadow:0 0 0 1px rgba(240,201,92,.35)}
+.snd svg{width:70%;height:70%}
+.snd .x{display:none}.snd.off .x{display:inline}.snd.off .w{display:none}
+#sndB{left:38.6%;top:1.1%;width:7cqw;height:7cqw}
+#sndM{right:3.5%;top:21.4%}
 /* atmosphere */
 #glow{left:22.1%;top:13.8%;width:120cqw;height:120cqw;translate:-50% -50%;pointer-events:none;mix-blend-mode:screen;
   background:radial-gradient(circle,rgba(255,226,140,.55) 0 2.5%,rgba(255,200,100,.22) 9%,rgba(255,180,80,.08) 30%,transparent 60%);animation:bulb 5.3s infinite steps(1)}
@@ -300,6 +305,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
   <div id="bg"></div>
   <img class="abs" id="eicon" src="assets/u_skull.png" alt="">
   <div class="bar abs" id="ehp"><i></i><b></b></div>
+  <button class="snd" id="sndB" type="button" aria-label="Sound on or off"><svg viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><path fill="#f0c95c" d="M2 6h3l4-3v10l-4-3H2z"/><path class="w" fill="none" stroke="#f0c95c" stroke-width="1.4" d="M11 5.5q2 2.5 0 5M12.8 3.8q3.4 4.2 0 8.4"/><path class="x" fill="none" stroke="#d23a2a" stroke-width="1.6" d="M11 5.5l4 5M15 5.5l-4 5"/></svg></button>
   <div class="abs" id="round">ROUND 1/5<small>THE BACK ROOM</small></div>
   <div class="abs" id="glow"></div>
   <div class="abs" id="dealerWrap"><img id="dealer" src="assets/dealer0.png" alt="The Dealer"><div class="smoke" style="left:72%;top:22%"></div></div>
@@ -342,6 +348,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
     <div id="topbar"><div class="lvl" id="pLvl">1</div><div class="who"><b>YOU</b><span><img src="assets/m_i_trophy.png" alt=""><i id="pTro" style="font-style:normal">0</i></span></div>
       <div class="cur"><img src="assets/u_coin.png" alt=""><span id="pGold">0</span></div><div class="cur"><img src="assets/m_i_chips.png" alt=""><span id="pChips">0</span></div></div>
     <nav id="nav"><button class="tab" type="button" data-t="0"><img src="assets/m_n_cards.png" alt="">CARDS</button><button class="tab" type="button" data-t="1"><img src="assets/m_n_battle2.png" alt="">BATTLE</button><button class="tab" type="button" data-t="2"><img src="assets/m_n_shop.png" alt="">MARKET</button></nav>
+    <button class="snd" id="sndM" type="button" aria-label="Sound on or off"><svg viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><path fill="#f0c95c" d="M2 6h3l4-3v10l-4-3H2z"/><path class="w" fill="none" stroke="#f0c95c" stroke-width="1.4" d="M11 5.5q2 2.5 0 5M12.8 3.8q3.4 4.2 0 8.4"/><path class="x" fill="none" stroke="#d23a2a" stroke-width="1.6" d="M11 5.5l4 5M15 5.5l-4 5"/></svg></button>
     <div id="pop" hidden></div>
     <div id="toast"></div>
   </div>
@@ -472,7 +479,7 @@ let toastT=null;function toast(t){const e=$('toast');e.textContent=t;e.classList
 
 /* ---------- menu shell ---------- */
 let tab=1,swapId=null;
-function openMenu(t){$('menu').hidden=false;setTab(t==null?tab:t);renderMenu()}
+function openMenu(t){$('menu').hidden=false;SND.music('menu');setTab(t==null?tab:t);renderMenu()}
 function setTab(t){tab=t;$('track').style.transform=`translateX(${-t*33.3333}%)`;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',+b.dataset.t===t));if(t!==0)endSwap()}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(+b.dataset.t));
 (function(){let sx=0,sy=0,on=false;const tr=$('track');
@@ -604,6 +611,30 @@ function closePop(){$('pop').hidden=true;$('pop').innerHTML=''}
 $('pop').addEventListener('click',e=>{if(e.target.id==='pop'&&$('popX'))closePop()});
 setInterval(()=>{if(!$('menu').hidden){renderCases();renderShop()}},1000);
 
+/* ---------- sound ---------- */
+const SND=(()=>{
+  let ctx=null,master=null,cur=null,curName=null,want=null;const bufs={},loading={};
+  let on=true;try{on=localStorage.getItem('dd-sound')!=='off'}catch(_){}
+  const paint=()=>document.querySelectorAll('.snd').forEach(b=>{b.classList.toggle('off',!on);b.setAttribute('aria-pressed',String(on))});
+  function init(){if(ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;ctx=new AC();master=ctx.createGain();master.gain.value=on?1:0;master.connect(ctx.destination);if(want)music(want)}
+  function load(n){if(bufs[n])return Promise.resolve(bufs[n]);if(loading[n])return loading[n];
+    return loading[n]=fetch(`assets/m_${n}.mp3`).then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>ctx.decodeAudioData(a,ok,no))).then(b=>bufs[n]=b).catch(()=>null)}
+  function fadeOut(node,t){if(!node)return;const g=node.g.gain,n=ctx.currentTime;g.cancelScheduledValues(n);g.setValueAtTime(g.value,n);g.linearRampToValueAtTime(0,n+t);setTimeout(()=>{try{node.src.stop()}catch(_){}},t*1000+80)}
+  async function music(n,vol=.6){want=n;if(!ctx)return;if(curName===n&&cur){const g=cur.g.gain,t=ctx.currentTime;g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(vol,t+.8);return}
+    const b=await load(n);if(!b||want!==n)return;
+    fadeOut(cur,1.4);const src=ctx.createBufferSource(),g=ctx.createGain();src.buffer=b;src.loop=true;g.gain.value=0;src.connect(g);g.connect(master);src.start();
+    g.gain.linearRampToValueAtTime(vol,ctx.currentTime+1.6);cur={src,g};curName=n}
+  function duck(vol,t=.6){if(!ctx||!cur)return;const g=cur.g.gain,n=ctx.currentTime;g.cancelScheduledValues(n);g.setValueAtTime(g.value,n);g.linearRampToValueAtTime(vol,n+t)}
+  async function sting(n,vol=.9){if(!ctx)return;const b=await load(n);if(!b)return;const src=ctx.createBufferSource(),g=ctx.createGain();g.gain.value=vol;src.buffer=b;src.connect(g);g.connect(master);src.start()}
+  function toggle(){on=!on;try{localStorage.setItem('dd-sound',on?'on':'off')}catch(_){}init();if(ctx){if(ctx.state==='suspended')ctx.resume();master.gain.setTargetAtTime(on?1:0,ctx.currentTime,.05)}paint()}
+  const unlock=()=>{init();if(ctx&&ctx.state==='suspended')ctx.resume()};
+  ['pointerdown','touchend','keydown'].forEach(e=>addEventListener(e,unlock,{capture:true,passive:true}));
+  document.addEventListener('visibilitychange',()=>{if(!ctx)return;if(document.hidden)ctx.suspend();else ctx.resume()});
+  document.querySelectorAll('.snd').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();toggle()}));
+  paint();
+  return{music,duck,sting};
+})();
+
 /* ---------- slots ---------- */
 const slotEls=[[],[]];
 (function(){const box=$('slots');for(const s of[0,1])for(let i=0;i<3;i++){const el=document.createElement('div');el.className=`slot r${s} c${i}`;el.tabIndex=0;el.onclick=()=>tapSlot(s,i);box.appendChild(el);slotEls[s][i]=el}})();
@@ -611,7 +642,7 @@ const slotEl=(s,i)=>slotEls[s][i];
 
 /* ---------- match ---------- */
 function newMatch(){
-  const ar=P.sel;applyArena(ar);
+  const ar=P.sel;applyArena(ar);SND.music('a'+(ar+1));
   S={arena:ar,round:1,hp:[START_HP,START_HP],coins:[0,0],bonus:[0,0],board:[[null,null,null],[null,null,null]],pile:[shuffle(deckNow()),shuffle(shuffle(ALL.filter(id=>C[id].u<=ar)).slice(0,6))],hand:[],sel:null,phase:'plan',elvl:Math.min(6,Math.max(ar+1,1+Math.floor(P.trophies/80)))};
   mood(0);startRound();
 }
@@ -881,6 +912,7 @@ function end(){
   let cm='';if(win){const e=P.cases.findIndex(c=>!c);if(e>=0){const r=Math.random(),k=r<.55?0:r<.85?1:r<.97?2:3;P.cases[e]={k,at:null};cm=` You won a ${CASES[k].n}!`}else cm=' Your case slots are full.'}
   saveP();
   $('endD').textContent=`You ${a} HP · ${ARENAS[S.arena].who} ${b} HP. ${tr>0?'+':''}${tr} trophies, +${g} gold.`+cm+un;
+  if(win){SND.duck(0,.4);SND.sting('win')}else SND.duck(.18,1.2);
   mood(win?3:1);sc.hidden=false;
 }
 
