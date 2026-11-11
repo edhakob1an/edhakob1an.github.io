@@ -547,31 +547,41 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 
 <script>
 const C={
-  gremlin:{n:'Gum Gremlin',f:'Gum Wad Gremlin',cost:1,atk:1,hp:2,role:'Pest',stick:1,t:'Sticky. Whatever it hits skips its next attack.'},
-  pigeon:{n:'Pigeon Lawyer',f:'Pigeon Lawyer',cost:2,atk:2,hp:2,role:'Thief',thief:1,t:'Every hit steals 1 coin for your next round.'},
-  fingers:{n:'Jar Fingers',f:'Fingers in a Jar',cost:2,atk:1,hp:4,role:'Multi',multi:3,t:'Pokes 3 times a turn. Useless against armor.'},
+  gremlin:{n:'Gum Gremlin',f:'Gum Wad Gremlin',cost:1,atk:1,hp:1,role:'Pest',stick:1,t:'Sticky. Whatever it hits skips its next attack.'},
+  pigeon:{n:'Pigeon Lawyer',f:'Pigeon Lawyer',cost:2,atk:1,hp:3,role:'Thief',thief:1,t:'Every hit steals 1 coin for your next round.'},
+  fingers:{n:'Jar Fingers',f:'Fingers in a Jar',cost:3,atk:1,hp:2,role:'Multi',multi:3,t:'Pokes 3 times a turn. Weak against armor.'},
   ratking:{n:'Rat King',f:'Rat King of Chips',cost:3,atk:1,hp:3,role:'Swarm',t:'On reveal: fills all your empty slots with 1/1 rats.'},
-  sandwich:{n:'Sandwich Knight',f:'Moldy Sandwich Knight',cost:3,atk:1,hp:4,role:'Poison',poison:2,t:'Hits poison: 2 damage next turn, then 1. Ignores armor.'},
-  clown:{n:'Melted Clown',f:'Melted Clown',cost:3,atk:1,hp:3,role:'Splash',splash:1,t:'Hits ALL enemy cards. On death: HONK, enemy cards swap slots.'},
-  grandma:{n:'Shotgun Granny',f:'Grandma with a Shotgun',cost:4,atk:5,hp:3,role:'Bruiser',t:'One huge shot. Wasted on tiny stuff like rats.'},
+  sandwich:{n:'Sandwich Knight',f:'Moldy Sandwich Knight',cost:3,atk:1,hp:3,role:'Poison',poison:2,t:'Hits poison: 2 damage next turn, then 1. Ignores armor.'},
+  clown:{n:'Melted Clown',f:'Melted Clown',cost:3,atk:1,hp:4,role:'Splash',splash:1,t:'Hits ALL enemy cards. On death: HONK, enemy cards swap slots.'},
+  grandma:{n:'Shotgun Granny',f:'Grandma with a Shotgun',cost:4,atk:4,hp:2,role:'Bruiser',t:'One huge shot. Wasted on tiny stuff like rats.'},
   toilet:{n:'Toilet Mimic',f:'Toilet Mimic',cost:4,atk:1,hp:7,role:'Tank',armor:1,t:'Armor 1: every hit deals 1 less. Poison gets through.'},
-  dice:{n:'Uncle Dice',f:'Sweaty Uncle Dice',cost:2,atk:0,hp:3,role:'Luck',dice:1,t:'On reveal: rolls a die. Attack = the roll (1 to 6).'},
-  blackhole:{n:'Black Hole',f:'Black Hole',cost:4,spell:1,role:'Spell',t:'On reveal: swallows BOTH middle cards. Yours too.'},
+  dice:{n:'Uncle Dice',f:'Sweaty Uncle Dice',cost:4,atk:0,hp:3,role:'Luck',dice:1,t:'On reveal: rolls a die. Attack = the roll (1 to 6).'},
+  blackhole:{n:'Black Hole',f:'Black Hole',cost:1,spell:1,role:'Spell',t:'On reveal: swallows BOTH middle cards. Yours too.'},
   rat:{n:'Rat',f:'Rat',cost:0,atk:1,hp:1,role:'Token',token:1,t:'A rat. It bites.'},
   golem:{n:'Slot Golem',f:'Slot Machine Golem',cost:6,atk:0,hp:0,role:'Legend',slot:1,leg:1,u:1,t:'On reveal: pulls its own lever. Attack and shield each roll 1 to 9.'},
-  coinflip:{n:'Coin Flip',f:'Coin Flip',cost:2,spell:1,role:'Spell',u:1,t:'Flips a coin for each of your cards: heads +2 attack, tails -1 shield.'},
-  gator:{n:'Gator Busboy',f:'Sewer Gator Busboy',cost:4,atk:3,hp:4,role:'Eater',eat:1,u:1,t:'When it kills a card it eats it, gaining half of that card\'s shield.'},
-  roach:{n:'Roach Bride',f:'Cockroach Bride',cost:1,atk:1,hp:1,role:'Undying',revive:1,u:1,t:'Comes back once, with 1 shield, after dying.'},
+  coinflip:{n:'Coin Flip',f:'Coin Flip',cost:1,spell:1,role:'Spell',u:1,t:'Flips a coin for each of your cards: heads +2 attack, tails -1 shield.'},
+  gator:{n:'Gator Busboy',f:'Sewer Gator Busboy',cost:4,atk:2,hp:4,role:'Eater',eat:1,u:1,t:'When it kills a card it eats it, gaining half of that card\'s shield.'},
+  roach:{n:'Roach Bride',f:'Cockroach Bride',cost:2,atk:1,hp:1,role:'Undying',revive:1,u:1,t:'Comes back once, with 1 shield, after dying.'},
   leech:{n:'Leech Clerk',f:'Leech Accountant',cost:2,atk:1,hp:3,role:'Drain',drain:1,u:1,t:'Heals your HP by the damage it deals.'},
-  jukebox:{n:'Jukebox',f:'Rotten Jukebox',cost:3,atk:0,hp:5,role:'Support',juke:1,u:1,t:'Each turn plays a cursed song: a random ally gets +1 attack.'},
-  smell:{n:'Bad Smell',f:'Bad Smell',cost:1,spell:1,role:'Spell',u:2,t:'On reveal: the enemy cards stumble into random slots.'},
-  vending:{n:'Vending Beast',f:'Broken Vending Machine',cost:4,atk:3,hp:4,role:'Payout',payout:1,u:2,t:'When destroyed, spits out 3 coins for your next round.'},
+  jukebox:{n:'Jukebox',f:'Rotten Jukebox',cost:3,atk:0,hp:4,role:'Support',juke:1,u:1,t:'Each turn plays a cursed song: a random ally gets +1 attack.'},
+  smell:{n:'Bad Smell',f:'Bad Smell',cost:1,spell:1,role:'Spell',u:2,t:'On reveal: the enemy cards stumble into random slots and gag: they skip their next attack.'},
+  vending:{n:'Vending Beast',f:'Broken Vending Machine',cost:4,atk:2,hp:4,role:'Payout',payout:1,u:2,t:'When destroyed, spits out 3 coins for your next round.'},
   karaoke:{n:'Karaoke Ghoul',f:'Karaoke Ghoul',cost:4,atk:2,hp:3,role:'Splash',splash:1,scream:1,u:2,t:'Screams at ALL enemy cards. Also deals 1 to its own neighbors.'},
-  bellhop:{n:'Bomb Bellhop',f:'Bomb Bellhop',cost:3,atk:1,hp:2,role:'Bomb',bomb:3,u:2,t:'On death: explodes for 3 damage on the card in front.'},
-  mannequin:{n:'Mannequin',f:'Pawnshop Mannequin',cost:3,atk:0,hp:6,role:'Guard',guard:1,u:2,t:'Its neighbors take 1 less damage from every hit.'},
-  mafioso:{n:'Mafioso',f:'Mustache Mafioso',cost:5,atk:4,hp:5,role:'Fast',fast:1,u:3,t:'Fast: shoots before everyone else each turn.'},
+  bellhop:{n:'Bomb Bellhop',f:'Bomb Bellhop',cost:3,atk:2,hp:2,role:'Bomb',bomb:3,u:2,t:'On death: explodes for 3 damage on the card in front.'},
+  mannequin:{n:'Mannequin',f:'Pawnshop Mannequin',cost:3,atk:1,hp:6,role:'Guard',guard:1,u:2,t:'Its neighbors take 1 less damage from every hit.'},
+  mafioso:{n:'Mafioso',f:'Mustache Mafioso',cost:5,atk:3,hp:4,role:'Fast',fast:1,u:3,t:'Fast: shoots before everyone else each turn.'},
   rabbit:{n:"Rabbit's Foot",f:"Lucky Rabbit's Foot",cost:2,spell:1,role:'Spell',u:3,t:'A random card of yours gets +2/+2. One time in four, it dies instead.'},
-  lastcall:{n:'Last Call',f:'Last Call',cost:3,spell:1,role:'Spell',u:3,t:'Every card on the table takes 2 damage. Armor does not help.'}
+  lastcall:{n:'Last Call',f:'Last Call',cost:2,spell:1,role:'Spell',u:3,t:'Every enemy card takes 2 damage, yours take 1. Armor does not help.'},
+  toenail:{n:'Toenail Hoarder',f:'Toenail Hoarder',cost:3,atk:1,hp:5,role:'Hoarder',hoard:1,u:4,t:'Every time any card dies, he pockets a toenail: +1 shield.'},
+  molar:{n:'Rotten Molar',f:'Rotten Molar',cost:3,atk:1,hp:3,role:'Rot',rot:2,u:4,t:'Whatever hits it gets poisoned (2). Armor does not help.'},
+  mattress:{n:'Motel Mattress',f:'Motel Mattress',cost:2,atk:1,hp:3,role:'Tank',absorb:1,u:4,t:'The first hit it takes each round does nothing.'},
+  foodpois:{n:'Food Poisoning',f:'Food Poisoning',cost:3,spell:1,role:'Spell',u:4,t:'Every enemy card on the table gets poisoned (2).'},
+  goblin:{n:'Dumpster Goblin',f:'Dumpster Goblin',cost:2,atk:1,hp:3,role:'Scavenger',scav:1,u:5,t:'Gains +1 attack every time an enemy card dies.'},
+  bucket:{n:'Bucket Head',f:'Bucket Head',cost:3,atk:2,hp:4,role:'Blind',blind:1,u:5,t:'Can\'t see: every attack picks a random lane. An empty lane hits the dealer.'},
+  hydra:{n:'Hairball Hydra',f:'Hairball Hydra',cost:4,atk:2,hp:2,role:'Multi',hydra:1,u:5,t:'Bites 3 times a turn: full attack, then 1 less, then 2 less.'},
+  ashtray:{n:'Ashtray Imp',f:'Ashtray Imp',cost:3,atk:1,hp:5,role:'Burn',burn:1,u:5,t:'Every turn it burns the enemy in front and its own neighbors for 1.'},
+  pickled:{n:'Pickled Uncle',f:'Pickled Uncle',cost:4,atk:2,hp:4,role:'Splash',jar:2,u:5,t:'When it dies the jar breaks: 2 damage to every enemy card.'},
+  eviction:{n:'Eviction Notice',f:'Eviction Notice',cost:2,spell:1,role:'Spell',lane:1,u:5,t:'Kicks the enemy card in front of it off the table.'}
 };
 for(const k in C)if(C[k].u==null)C[k].u=0;
 const ALL=Object.keys(C).filter(k=>!C[k].token);
@@ -1030,7 +1040,7 @@ const slotEl=(s,i)=>slotEls[s][i];
 /* ---------- match ---------- */
 function newMatch(){
   const ar=P.sel;applyArena(ar);SND.music('a'+(ar+1));
-  S={arena:ar,round:1,hp:[START_HP,START_HP],coins:[0,0],bonus:[0,0],board:[[null,null,null],[null,null,null]],pile:[shuffle(deckNow()),shuffle(shuffle(ALL.filter(id=>C[id].u<=ar)).slice(0,6))],hand:[],sel:null,phase:'plan',elvl:Math.min(6,Math.max(ar+1,1+Math.floor(P.trophies/80)))};
+  S={arena:ar,round:1,hp:[START_HP,START_HP],coins:[0,0],bonus:[0,0],board:[[null,null,null],[null,null,null]],pile:[shuffle(deckNow()),shuffle(shuffle(ALL.filter(id=>C[id].u<=ar)).slice(0,6))],hand:[],sel:null,phase:'plan',elvl:Math.max(1,Math.min(5,Math.round(deckNow().reduce((a,id)=>a+P.cards[id].l,0)/6)+(ar>=2?1:0)))};
   mood(0);startRound();
 }
 function startRound(){
@@ -1049,6 +1059,7 @@ function enemyPlan(){
     const d=C[id];if(d.cost>S.coins[1])continue;
     if(id==='blackhole'&&!S.board[0][1]&&Math.random()<.6)continue;
     if((id==='rabbit'||id==='coinflip')&&!S.board[1].some(Boolean)&&Math.random()<.7)continue;
+    if(id==='eviction'){const t=[0,1,2].filter(i=>!S.board[1][i]&&S.board[0][i]);if(t.length){S.board[1][t[rnd(t.length)]]=mk(id,1);S.coins[1]-=d.cost;continue}else if(Math.random()<.7)continue}
     const facing=empty.filter(i=>S.board[0][i]);
     const lane=(facing.length&&Math.random()<.6)?facing[rnd(facing.length)]:empty[rnd(empty.length)];
     S.board[1][lane]=mk(id,1);S.coins[1]-=d.cost;
@@ -1193,7 +1204,7 @@ async function battle(){
   await flipAll();
   await sleep(300);
   if(S.arena===5&&S.board[0].filter(Boolean).length>1){log('THE RINGMASTER SHUFFLES YOUR CARDS');for(let j=0;j<3;j++)vfx(slotEl(0,j),'honk');await sleep(350);S.board[0]=shuffle(S.board[0]);render();for(let j=0;j<3;j++)if(S.board[0][j])fx(cardOf(0,j),'flip');mood(1,900);await sleep(600)}
-  for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&C[c.id].spell){S.board[s][i]=null;render();await cast(c,s)}}
+  for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&C[c.id].spell){S.board[s][i]=null;render();await cast(c,s,i)}}
   for(const s of[0,1])for(let i=0;i<3;i++){
     const c=S.board[s][i];if(!c||!c.fresh)continue;
     if(c.id==='golem'){c.fresh=false;c.atk=1+rnd(9)+Math.floor((c.lvl-1)/2);c.hp=1+rnd(9)+(c.lvl-1)+(s===1&&S.arena===3?1:0);c.fresh=true;render();const el=slotEl(s,i);float(el,`${c.atk} / ${c.hp}`,'#f0c95c');vfx(el,'coins');log(`SLOT GOLEM ROLLED ${c.atk} / ${c.hp}`);await sleep(800)}
@@ -1201,7 +1212,7 @@ async function battle(){
     if(c.id==='ratking'){let n=0;for(let j=0;j<3;j++)if(!S.board[s][j]){S.board[s][j]=mk('rat',s);S.board[s][j].hidden=false;n++}
       if(n){render();log(`RAT KING CALLS ${n} RAT${n>1?'S':''}`);for(let j=0;j<3;j++){const x=S.board[s][j];if(x&&x.id==='rat'&&x.fresh)fx(cardOf(s,j),'flip')}await sleep(700)}}
   }
-  for(const s of[0,1])for(const c of S.board[s])if(c){c.fresh=false;c.hidden=false}
+  for(const s of[0,1])for(const c of S.board[s])if(c){c.fresh=false;c.hidden=false;if(C[c.id].absorb)c.abs=true}
   render();
   if(S.arena===2&&Math.random()<.5){const occ=[];for(const s of[0,1])for(let i=0;i<3;i++)if(S.board[s][i])occ.push([s,i]);
     if(occ.length){const[s,i]=occ[rnd(occ.length)],c=S.board[s][i];const b=$('bolt');b.classList.remove('now');void b.offsetWidth;b.classList.add('now');
@@ -1216,16 +1227,19 @@ async function battle(){
   if(S.hp[0]<=0||S.hp[1]<=0||S.round>ROUNDS)return end();
   startRound();
 }
-async function cast(c,s){
+async function cast(c,s,lane){
   const who=s?'DEALER':'YOU',o=1-s;
-  if(c.id==='smell'){log(`${who} CAST BAD SMELL`);for(let j=0;j<3;j++)vfx(slotEl(o,j),'poison');await sleep(450);S.board[o]=shuffle(S.board[o]);render();for(let j=0;j<3;j++)if(S.board[o][j])fx(cardOf(o,j),'flip');await sleep(500);return}
+  if(c.id==='smell'){log(`${who} CAST BAD SMELL`);for(let j=0;j<3;j++)vfx(slotEl(o,j),'poison');await sleep(450);S.board[o]=shuffle(S.board[o]);for(const x of S.board[o])if(x)x.stuck=1;render();for(let j=0;j<3;j++)if(S.board[o][j]){fx(cardOf(o,j),'flip');float(slotEl(o,j),'GAG','#a6d257')}await sleep(500);return}
   if(c.id==='coinflip'){log(`${who} FLIP A COIN`.replace('DEALER FLIP','DEALER FLIPS'));for(let j=0;j<3;j++){const x=S.board[s][j];if(!x||C[x.id].spell)continue;const h=Math.random()<.5;if(h)x.atk+=2;else x.hp-=1;render();float(slotEl(s,j),h?'HEADS +2':'TAILS -1',h?'#f0c95c':'#ff7a5c');vfx(slotEl(s,j),h?'coins':'spark');await sleep(380)}await cleanup();return}
   if(c.id==='rabbit'){const own=[0,1,2].filter(j=>S.board[s][j]&&!C[S.board[s][j].id].spell);log(`${who} RUB THE RABBIT'S FOOT`.replace('DEALER RUB','DEALER RUBS'));
     if(!own.length){float(slotEl(s,1),'NO ONE TO BLESS','#cfc');await sleep(500);return}
     const j=own[rnd(own.length)],x=S.board[s][j];if(Math.random()<.25){x.hp=0;float(slotEl(s,j),'CURSED!','#ff7a5c');vfx(slotEl(s,j),'boom')}else{x.atk+=2;x.hp+=2;render();float(slotEl(s,j),'+2 / +2','#a6d257');vfx(slotEl(s,j),'spark')}
     await sleep(650);await cleanup();return}
-  if(c.id==='lastcall'){log(`${who} RANG LAST CALL`);for(const q of[0,1])for(let j=0;j<3;j++){const x=S.board[q][j];if(!x)continue;x.hp-=2;fx(cardOf(q,j),'hit');float(slotEl(q,j),'-2','#ff7a5c');vfx(slotEl(q,j),'boom')}
+  if(c.id==='lastcall'){log(`${who} RANG LAST CALL`);for(const q of[0,1])for(let j=0;j<3;j++){const x=S.board[q][j];if(!x)continue;const dm=q===s?1:2;x.hp-=dm;fx(cardOf(q,j),'hit');float(slotEl(q,j),'-'+dm,'#ff7a5c');vfx(slotEl(q,j),'boom')}
     render();await sleep(700);await cleanup();return}
+  if(c.id==='foodpois'){log(`${who} SERVED FOOD POISONING`);for(let j=0;j<3;j++){const x=S.board[o][j];if(!x)continue;x.poison=Math.max(x.poison,2);vfx(slotEl(o,j),'poison');float(slotEl(o,j),'POISONED','#a6d257')}render();await sleep(650);return}
+  if(c.id==='eviction'){log(`${who} SERVED AN EVICTION`);const x=S.board[o][lane];if(!x){float(slotEl(o,lane),'NOBODY HOME','#cfc');await sleep(500);return}
+    fx(cardOf(o,lane),'die');float(slotEl(o,lane),'EVICTED','#f0c95c');if(o===1)mood(2,900);await sleep(520);S.board[o][lane]=null;render();await sleep(200);return}
   if(c.id==='blackhole'){
     log(`${s?'DEALER':'YOU'} CAST BLACK HOLE`);
     vfx(slotEl(0,1),'hole');vfx(slotEl(1,1),'hole');
@@ -1238,12 +1252,14 @@ async function cast(c,s){
 async function turn(){
   let ticked=false;
   for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&C[c.id].juke){const al=[0,1,2].filter(j=>j!==i&&S.board[s][j]&&!C[S.board[s][j].id].spell);if(al.length){const j=al[rnd(al.length)];S.board[s][j].atk+=1;float(slotEl(s,j),'+1 ATK','#f0c95c');vfx(slotEl(s,i),'honk');ticked=true}}}
+  for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&C[c.id].burn&&c.hp>0){const f=S.board[1-s][i];const tg=[];if(f)tg.push([1-s,i]);[i-1,i+1].forEach(j=>{if(j>=0&&j<3&&S.board[s][j])tg.push([s,j])});
+    if(tg.length){vfx(slotEl(s,i),'boom');for(const[q,j]of tg){S.board[q][j].hp-=1;float(slotEl(q,j),'BURN -1','#ff9a3c')}ticked=true}}}
   for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&c.poison>0){c.hp-=c.poison;float(slotEl(s,i),'-'+c.poison,'#a6d257');vfx(slotEl(s,i),'poison');c.poison--;ticked=true}}
   if(ticked){render();await sleep(500);await cleanup()}
   const a=await attackPhase(true);
   if(S.hp[0]<=0||S.hp[1]<=0)return true;
   const b=await attackPhase(false);
-  return a||b;
+  return a||b||ticked;
 }
 const guarded=(t)=>{const s=t.side,i=S.board[s].indexOf(t);return[i-1,i+1].some(j=>j>=0&&j<3&&S.board[s][j]&&C[S.board[s][j].id].guard&&S.board[s][j].hp>0)};
 async function attackPhase(fast){
@@ -1253,10 +1269,12 @@ async function attackPhase(fast){
     if(!!d.fast!==fast)continue;
     if(c.stuck>0){c.stuck--;float(slotEl(s,i),'STUCK','#f59ad3');continue}
     attackers.push([s,i]);
+    if(d.blind){const j=rnd(3);if(S.board[o][j])hits.push({c,s,t:S.board[o][j],dmg:c.atk});else hits.push({c,s,face:true,dmg:c.atk});if(j!==i)float(slotEl(s,i),'WHERE?','#e6d6b0');continue}
     const targets=d.splash?[0,1,2].filter(j=>S.board[o][j]):(S.board[o][i]?[i]:[]);
-    for(let k=0;k<(d.multi||1);k++){
-      if(!targets.length)hits.push({c,s,face:true,dmg:c.atk});
-      else targets.forEach(j=>hits.push({c,s,t:S.board[o][j],dmg:c.atk}));
+    const nh=d.hydra?3:(d.multi||1);
+    for(let k=0;k<nh;k++){const dm=d.hydra?Math.max(1,c.atk-k):c.atk;
+      if(!targets.length)hits.push({c,s,face:true,dmg:dm});
+      else targets.forEach(j=>hits.push({c,s,t:S.board[o][j],dmg:dm}));
     }
     if(d.scream)[i-1,i+1].forEach(j=>{if(j>=0&&j<3&&S.board[s][j])hits.push({c,s,t:S.board[s][j],dmg:1,friend:true})});
   }
@@ -1271,9 +1289,11 @@ async function attackPhase(fast){
     if(h.face){S.hp[o]-=h.dmg;faceDmg[o]+=h.dmg;if(d.thief)S.bonus[h.s]++;if(d.drain)heal[h.s]+=h.dmg;continue}
     if(h.t.hp<=0&&!h.friend)continue;
     const before=h.t.hp;
-    const arm=(C[h.t.id].armor||0)+(guarded(h.t)?1:0),dealt=Math.max(0,h.dmg-arm);
+    const td=C[h.t.id],arm=(td.armor||0)+(guarded(h.t)?1:0);let dealt=Math.max(0,h.dmg-arm);
+    if(td.absorb&&h.t.abs){h.t.abs=false;dealt=0;const ti=S.board[h.t.side].indexOf(h.t);if(ti>=0)float(slotEl(h.t.side,ti),'SOAKED UP','#e6d6b0')}
     h.t.hp-=dealt;dmgOn.set(h.t,(dmgOn.get(h.t)||0)+dealt);
     if(h.friend)continue;
+    if(td.rot)h.c.poison=Math.max(h.c.poison,td.rot);
     if(d.poison)h.t.poison=Math.max(h.t.poison,d.poison+(S.arena===1?1:0));
     if(d.stick&&dealt>0){h.t.stuck=1;stuckOn.add(h.t)}
     if(d.thief&&dealt>0)S.bonus[h.s]++;
@@ -1292,7 +1312,7 @@ async function attackPhase(fast){
   return true;
 }
 async function cleanup(){
-  let any=false;const honk=[],bombs=[];
+  let any=false;const honk=[],bombs=[],jars=[];
   for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(!c||c.hp>0)continue;
     const d=C[c.id];
     if(d.revive&&!c.revived){c.revived=true;c.hp=1;c.poison=0;any=true;float(slotEl(s,i),'SHE\'S BACK','#e6d6b0');continue}
@@ -1300,12 +1320,15 @@ async function cleanup(){
     if(S.arena===4&&!d.token){S.hp[s]-=1;float(s?$('ehp'):$('php'),'-1 BLOOD','#c43a2a')}
     if(c.id==='clown')honk.push(s);
     if(d.bomb)bombs.push([1-s,i,d.bomb]);
+    if(d.jar)jars.push([1-s,d.jar]);
+    for(const q of[0,1])for(let j=0;j<3;j++){const x=S.board[q][j];if(!x||x===c||x.hp<=0)continue;if(C[x.id].hoard){x.hp+=1;float(slotEl(q,j),'+1 NAIL','#e6d6b0')}if(C[x.id].scav&&q!==s){x.atk+=1;float(slotEl(q,j),'+1 ATK','#f0c95c')}}
     if(d.payout){S.bonus[s]+=3;float(s?$('ehp'):$('php'),'+3 COINS','#f0c95c')}
     if(s===1)mood(3,800)}
   if(!any)return false;
   await sleep(480);
   for(const s of[0,1])for(let i=0;i<3;i++){const c=S.board[s][i];if(c&&c.hp<=0)S.board[s][i]=null}
   render();
+  if(jars.length){log('THE JAR BREAKS!');for(const[q,dm]of jars)for(let j=0;j<3;j++){const t=S.board[q][j];vfx(slotEl(q,j),'poison');if(t){t.hp-=dm;fx(cardOf(q,j),'hit');float(slotEl(q,j),'-'+dm,'#a6d257')}}render();await sleep(600);await cleanup()}
   if(bombs.length){log('BOOM! THE BELLHOP BLEW UP');for(const[s,i,dm]of bombs){vfx(slotEl(s,i),'boom');const t=S.board[s][i];if(t){t.hp-=dm;fx(cardOf(s,i),'hit');float(slotEl(s,i),'-'+dm,'#ff7a5c')}}
     render();await sleep(600);await cleanup()}
   for(const s of honk){const o=1-s;S.board[o]=shuffle(S.board[o]);log('HONK! CARDS SWAPPED')}
