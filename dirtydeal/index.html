@@ -72,7 +72,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 #pauseScr .b{justify-content:center;font-size:4cqw;padding:3cqw}
 #amb{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 #amb>*{position:absolute;pointer-events:none}
-.orb{width:0;height:0}.orb i{position:absolute;left:0;top:0;width:3px;height:3px;background:#100c08;box-shadow:0 0 0 1px rgba(0,0,0,.4);animation:orbit var(--d) linear infinite;--r:16px}
+.orb{width:0;height:0}.orb i{position:absolute;left:0;top:0;width:3px;height:2px;background:#0c0906;box-shadow:-2px -1px 0 0 rgba(200,210,220,.35),2px -1px 0 0 rgba(200,210,220,.35);animation:orbit var(--d) linear infinite;--r:16px}
 @keyframes orbit{from{transform:rotate(0) translateX(var(--r)) translateY(0)}25%{transform:rotate(90deg) translateX(calc(var(--r)*.7)) translateY(3px)}50%{transform:rotate(180deg) translateX(var(--r)) translateY(-2px)}75%{transform:rotate(270deg) translateX(calc(var(--r)*1.2)) translateY(2px)}to{transform:rotate(360deg) translateX(var(--r)) translateY(0)}}
 .spr{background-repeat:no-repeat;background-size:400% 100%;image-rendering:pixelated;animation:frames var(--fd,.36s) steps(4) infinite}
 @keyframes frames{from{background-position:0 0}to{background-position:133.333% 0}}
@@ -919,7 +919,7 @@ const AMB=(()=>{
     const gl=$('glow');gl.classList.toggle('sway',k===1||k===2);
     if(k===0){flies(22.5,13.5,2,14);
       every(14000,()=>{const d=Math.random()<.5?1:-1;runner('a_rat',13,29.6,29.6,2400,'.24s',d,false,true)},9000)}
-    if(k===1){el('eyes',48.4,31.6);const e2=el('eyes e2',54.2,33.6);e2.style.width='1.4%';
+    if(k===1){el('eyes',49.2,23.2);const e2=el('eyes e2',55.6,25.4);e2.style.width='1.4%';
       flies(55,10,3,12,$('dealerWrap'));
       const src=[[8.5,21,46],[93,24,49.5],[63,9,30]];
       every(1600,()=>{const s=src[Math.floor(Math.random()*src.length)];drip(s[0],s[1],s[2],s[0]!==63)},1600);
