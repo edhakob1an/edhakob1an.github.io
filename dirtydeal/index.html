@@ -913,12 +913,22 @@ const AMB=(()=>{
     const k=[{left:(dir>0?-12:108)+'%',top:y0+'%'}];if(bob){k.push({left:'60%',top:(y0+y1)/2-3+'%',rotate:'-25deg',offset:.4});k.push({left:'30%',top:(y0+y1)/2+2+'%',rotate:'15deg',offset:.7})}
     k.push({left:(dir>0?108:-12)+'%',top:y1+'%'});
     e.animate(k,{duration:dur,easing:'linear'}).finished.then(()=>e.remove()).catch(()=>e.remove())}
+  async function ratRun(){
+    const dir=Math.random()<.5?1:-1,e=el('spr',dir>0?-14:104,70.6);e.style.width='12%';e.style.aspectRatio='1';e.style.backgroundImage='url(assets/a_rat.png)';e.style.setProperty('--fd','.2s');
+    if(dir<0)e.style.transform='scaleX(-1)';
+    const X=v=>dir>0?v:90-v;let x=-14;
+    const dash=(to,ms)=>{const a=e.animate([{left:X(x)+'%'},{left:X(to)+'%'}],{duration:ms,easing:'cubic-bezier(.3,0,.6,1)',fill:'forwards'});x=to;e.style.animationPlayState='running';return a.finished};
+    const freeze=async ms=>{e.style.animationPlayState='paused';const t0=performance.now();
+      while(performance.now()-t0<ms){e.style.backgroundPosition=Math.random()<.5?'33.333% 0':'0 0';e.style.rotate=(Math.random()-.5)*4+'deg';await new Promise(r=>setTimeout(r,90+Math.random()*80))}e.style.rotate='0deg'};
+    try{await dash(14+Math.random()*12,520);await freeze(700+Math.random()*700);await dash(44+Math.random()*14,420);
+      if(Math.random()<.6)await freeze(350+Math.random()*500);await dash(106,620)}catch(_){}
+    e.remove()}
   const T=[];const every=(ms,fn,jit=0)=>{const go=()=>{T.push(setTimeout(()=>{if(live())fn();go()},ms+Math.random()*jit))};go()};
   function set(k){if(k===cur)return;cur=k;T.forEach(clearTimeout);T.length=0;box().innerHTML='';
     document.querySelectorAll('#dealerWrap .orb,#stage>.spr').forEach(e=>e.remove());
     const gl=$('glow');gl.classList.toggle('sway',k===1||k===2);
     if(k===0){flies(22.5,13.5,2,14);
-      every(14000,()=>{const d=Math.random()<.5?1:-1;runner('a_rat',13,29.6,29.6,2400,'.24s',d,false,true)},9000)}
+      every(15000,ratRun,9000)}
     if(k===1){el('eyes',49.2,23.2);const e2=el('eyes e2',55.6,25.4);e2.style.width='1.4%';
       flies(55,10,3,12,$('dealerWrap'));
       const src=[[8.5,21,46],[93,24,49.5],[63,9,30]];
@@ -933,7 +943,7 @@ const AMB=(()=>{
       every(1700,()=>{drip(16.2,25.2,30,false);setTimeout(()=>drip(24.8,25.6,30.5,false),600)},500);
       every(9000,()=>{const d=$('dealer');d.animate([{translate:'0 0'},{translate:'-1px 1px'},{translate:'1px 0'},{translate:'-1px 1px'},{translate:'0 0'}],{duration:500,iterations:2})},6000)}
   }
-  return{set,_run:runner};
+  return{set,_run:runner,_rat:ratRun};
 })();
 
 /* ---------- sound ---------- */
