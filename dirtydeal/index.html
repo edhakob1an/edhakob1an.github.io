@@ -64,7 +64,12 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 .snd{position:absolute;z-index:7;width:8.4cqw;height:8.4cqw;display:grid;place-items:center;background:rgba(8,6,5,.7);border:2px solid #000;box-shadow:0 0 0 1px rgba(240,201,92,.35)}
 .snd svg{width:70%;height:70%}
 .snd .x{display:none}.snd.off .x{display:inline}.snd.off .w{display:none}
-#sndB{left:38.6%;top:1.1%;width:7cqw;height:7cqw}
+#pauseB{left:38.6%;top:1.1%;width:7cqw;height:7cqw}
+#pauseB .x{display:none!important}
+#pauseScr{z-index:55;background:rgba(5,4,3,.82);display:grid;place-items:center;padding:0 8%}
+#pauseScr .box{animation:popin .25s cubic-bezier(.2,1.4,.4,1)}
+#pauseScr .pbtns{display:flex;flex-direction:column;gap:3cqw;align-items:stretch;margin-top:3cqw}
+#pauseScr .b{justify-content:center;font-size:4cqw;padding:3cqw}
 /* atmosphere */
 #glow{left:22.1%;top:13.8%;width:120cqw;height:120cqw;translate:-50% -50%;pointer-events:none;mix-blend-mode:screen;
   background:radial-gradient(circle,rgba(255,226,140,.55) 0 2.5%,rgba(255,200,100,.22) 9%,rgba(255,180,80,.08) 30%,transparent 60%);animation:bulb 5.3s infinite steps(1)}
@@ -369,7 +374,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
   <div id="bg"></div>
   <img class="abs" id="eicon" src="assets/u_skull.png" alt="">
   <div class="bar abs" id="ehp"><i></i><b></b></div>
-  <button class="snd" id="sndB" type="button" aria-label="Sound on or off"><svg viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><path fill="#f0c95c" d="M2 6h3l4-3v10l-4-3H2z"/><path class="w" fill="none" stroke="#f0c95c" stroke-width="1.4" d="M11 5.5q2 2.5 0 5M12.8 3.8q3.4 4.2 0 8.4"/><path class="x" fill="none" stroke="#d23a2a" stroke-width="1.6" d="M11 5.5l4 5M15 5.5l-4 5"/></svg></button>
+  <button class="snd" id="pauseB" type="button" aria-label="Pause"><svg viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><rect x="4" y="3" width="3" height="10" fill="#f0c95c"/><rect x="9" y="3" width="3" height="10" fill="#f0c95c"/></svg></button>
   <div class="abs" id="round">ROUND 1/5<small>THE BACK ROOM</small></div>
   <div class="abs" id="glow"></div>
   <div class="abs" id="dealerWrap"><img id="dealer" src="assets/dealer0.png" alt="The Dealer"><div class="smoke" style="left:72%;top:22%"></div></div>
@@ -425,6 +430,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
     <div id="toast"></div>
   </div>
 
+  <div class="screen" id="pauseScr" hidden><div class="box" id="pauseBox"></div></div>
   <div class="screen" id="endScreen" hidden>
     <div class="abs" id="endT">YOU WIN</div>
     <div class="abs" id="endD"></div>
@@ -467,7 +473,8 @@ const ALL=Object.keys(C).filter(k=>!C[k].token);
 const ROUNDS=5,START_HP=20;
 const rnd=n=>Math.floor(Math.random()*n);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let PAUSED=false;
+const sleep=ms=>new Promise(r=>{const m=S;const tick=()=>{if(m&&m.dead)return;if(PAUSED)return setTimeout(tick,120);r()};setTimeout(tick,ms)});
 const $=id=>document.getElementById(id);
 
 function frameOf(id){const d=C[id];return d.spell?'spell':d.token?'token':d.leg?'legend':'common'}
@@ -707,7 +714,7 @@ setInterval(()=>{if(!$('menu').hidden){renderCases();renderShop();renderTimers()
 const SND=(()=>{
   let ctx=null,master=null,cur=null,curName=null,want=null;const bufs={},loading={};
   let on=true;try{on=localStorage.getItem('dd-sound')!=='off'}catch(_){}
-  const paint=()=>document.querySelectorAll('.snd').forEach(b=>{b.classList.toggle('off',!on);b.setAttribute('aria-pressed',String(on))});
+  const paint=()=>document.querySelectorAll('.snd:not(#pauseB)').forEach(b=>{b.classList.toggle('off',!on);b.setAttribute('aria-pressed',String(on))});
   function init(){if(ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;ctx=new AC();master=ctx.createGain();master.gain.value=on?1:0;master.connect(ctx.destination);if(want)music(want)}
   function load(n){if(bufs[n])return Promise.resolve(bufs[n]);if(loading[n])return loading[n];
     return loading[n]=fetch(`assets/m_${n}.mp3`).then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>ctx.decodeAudioData(a,ok,no))).then(b=>bufs[n]=b).catch(()=>null)}
@@ -722,7 +729,7 @@ const SND=(()=>{
   const unlock=()=>{init();if(ctx&&ctx.state==='suspended')ctx.resume()};
   ['pointerdown','touchend','keydown'].forEach(e=>addEventListener(e,unlock,{capture:true,passive:true}));
   document.addEventListener('visibilitychange',()=>{if(!ctx)return;if(document.hidden)ctx.suspend();else ctx.resume()});
-  document.querySelectorAll('.snd').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();toggle()}));
+  document.querySelectorAll('.snd:not(#pauseB)').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();toggle()}));
   paint();
   return{music,duck,sting,toggle,isOn:()=>on};
 })();
@@ -1007,6 +1014,29 @@ function end(){
   if(win){SND.duck(0,.4);SND.sting('win')}else SND.duck(.18,1.2);
   mood(win?3:1);sc.hidden=false;
 }
+
+/* ---------- pause ---------- */
+const inMatch=()=>S&&$('menu').hidden&&$('endScreen').hidden&&S.phase!=='end'&&S.phase!=='idle'&&!S.dead;
+function pauseGame(){if(!inMatch()||PAUSED)return;PAUSED=true;document.getAnimations().forEach(a=>{try{a.pause()}catch(_){}});SND.duck(.15,.3);drawPause();$('pauseScr').hidden=false}
+function resumeGame(){if(!PAUSED)return;$('pauseScr').hidden=true;PAUSED=false;document.getAnimations().forEach(a=>{try{if(a.playState==='paused')a.play()}catch(_){}});SND.duck(.6,.5)}
+function drawPause(){
+  $('pauseBox').innerHTML=`<h3>PAUSED</h3><p style="text-align:center">Round ${Math.min(S.round,ROUNDS)} of ${ROUNDS} · ${ARENAS[S.arena||0].who} is waiting.</p>
+   <div class="pbtns"><button class="b y" id="pRes" type="button">RESUME</button><button class="b ${SND.isOn()?'g':'p'}" id="pSnd" type="button">SOUND: ${SND.isOn()?'ON':'OFF'}</button><button class="b r" id="pQuit" type="button">QUIT MATCH</button></div>`;
+  $('pRes').onclick=resumeGame;
+  $('pSnd').onclick=()=>{SND.toggle();if(SND.isOn())SND.duck(.15,.1);drawPause()};
+  $('pQuit').onclick=()=>{$('pauseBox').innerHTML=`<h3>QUIT MATCH?</h3><p style="text-align:center">Walking away counts as a loss. You lose 15 trophies.</p>
+     <div class="pbtns"><button class="b r" id="qY" type="button">QUIT</button><button class="b y" id="qN" type="button">KEEP PLAYING</button></div>`;
+    $('qN').onclick=drawPause;$('qY').onclick=quitMatch};
+}
+function quitMatch(){
+  S.dead=true;PAUSED=false;$('pauseScr').hidden=true;
+  document.getAnimations().forEach(a=>{try{a.cancel()}catch(_){}});
+  document.querySelectorAll('.fly,.flt,.vfx,.dust').forEach(e=>e.remove());$('croupier').hidden=true;
+  P.trophies=Math.max(0,P.trophies-15);addXP(2);saveP();
+  S.phase='idle';openMenu(2);setTimeout(()=>toast('YOU WALKED AWAY · -15 TROPHIES'),200);
+}
+$('pauseB').onclick=e=>{e.stopPropagation();pauseGame()};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseGame()});
 
 applyArena(P.sel);openMenu(2);
 S={arena:P.sel,round:1,hp:[START_HP,START_HP],coins:[3,3],bonus:[0,0],board:[[null,null,null],[null,null,null]],pile:[[],[]],hand:[],sel:null,phase:'idle'};
