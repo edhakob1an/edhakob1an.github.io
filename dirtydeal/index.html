@@ -283,6 +283,12 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 #battleBtn img{width:100%}
 @keyframes breathe{50%{transform:scale(1.045)}}
 #deckPeek{position:absolute;left:50%;top:51.2%;translate:-50% 0;font-family:var(--display);font-size:2.4cqw;color:var(--paper);background:rgba(8,6,5,.75);padding:.6cqw 2cqw;white-space:nowrap;z-index:2}
+#apick{position:absolute;left:12%;right:12%;top:52.4%;height:5.6%;display:flex;align-items:stretch;z-index:4;background:rgba(8,6,5,.82);border:2px solid #000;box-shadow:0 0 0 1px rgba(240,201,92,.35)}
+.ap{width:13%;flex:none;font-family:var(--display);font-weight:700;font-size:6cqw;color:var(--bulb);text-shadow:2px 2px 0 #000;background:rgba(0,0,0,.35)}
+.ap:disabled{opacity:.2}
+.apt{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;line-height:1.05;text-align:center}
+.apt b{font-family:var(--display);font-weight:700;font-size:3.4cqw;color:var(--bulb);text-shadow:2px 2px 0 #000}
+.apt span{font-size:3.4cqw;color:var(--paper);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 #cases{position:absolute;left:3%;right:3%;top:59.4%;height:11.2%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2%;z-index:2}
 .case{position:relative;background:rgba(8,6,5,.78);border:2px solid #000;box-shadow:inset 0 0 0 2px #3b2a1c;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 .5cqw .8cqh;cursor:pointer;overflow:hidden}
 .case img{position:absolute;top:6%;left:50%;translate:-50% 0;width:78%}
@@ -438,6 +444,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
         <div id="qbtns"><button class="qb" id="qFriends" type="button" aria-label="Friends"><img src="assets/i_friends.png" alt=""></button><button class="qb" id="qRules" type="button" aria-label="How to play"><img src="assets/i_rules.png" alt=""></button><button class="qb" id="qMenu" type="button" aria-label="Settings"><img src="assets/i_settings.png" alt=""></button></div>
         <button id="passBtn" type="button"><img src="assets/wheel.png" alt=""><span><b>FREE ROULETTE</b><em id="passT">Ready!</em></span><i class="dot" id="passDot">!</i></button>
         <button id="evBtn" type="button" aria-label="Black Market deals"><div class="ring"><img src="assets/coins.png" alt=""></div><em id="evT">0h</em></button>
+        <div id="apick"><button class="ap" id="apL" type="button" aria-label="Previous arena">‹</button><div class="apt"><b id="apN">ARENA 1</b><span id="apW"></span></div><button class="ap" id="apR" type="button" aria-label="Next arena">›</button></div>
         <div id="cases"></div>
         <button id="battleBtn" type="button" aria-label="Battle"><img src="assets/m_btn_battle.png" alt=""></button>
       </section>
@@ -606,7 +613,9 @@ function renderTop(){P.lvl=P.lvl||1;$('pLvl').textContent=P.lvl;const n=xpNeed(P
 /* ---------- battle tab ---------- */
 const tc=x=>x.replace(/\w\S*/g,w=>w[0]+w.slice(1).toLowerCase());
 function renderBattle(){
-  P.sel=P.best;
+  if(P.sel==null||P.sel>P.best)P.sel=P.best;
+  const a=ARENAS[P.sel];$('apN').textContent=`ARENA ${P.sel+1} · ${a.n}`;$('apW').textContent='Dealer: '+a.who;
+  $('apL').disabled=P.sel===0;$('apR').disabled=P.sel>=P.best;
   $('battleBtn').disabled=false;
   renderTimers();renderCases();
 }
@@ -615,6 +624,8 @@ function renderTimers(){
   $('passT').textContent=ready?'Ready!':fmt(left/1000);$('passBtn').classList.toggle('ready',ready);$('passDot').hidden=!ready;
   const nd=DAY-(Date.now()%DAY);$('evT').textContent=fmt(nd/1000);$('dealT').textContent='new in '+fmt(nd/1000);
 }
+$('apL').onclick=()=>{P.sel=Math.max(0,P.sel-1);saveP();renderBattle()};
+$('apR').onclick=()=>{P.sel=Math.min(P.best,P.sel+1);saveP();renderBattle()};
 $('passBtn').onclick=()=>{setTab(4);RL.refresh()};$('evBtn').onclick=()=>setTab(0);
 $('curG').onclick=$('curC').onclick=()=>setTab(0);
 $('prof').onclick=()=>{pop(`<h3>YOUR NAME</h3><p style="text-align:center">What should the Dealer call you?</p><input class="inp" id="nmIn" maxlength="12" value="${(P.name||'STRANGER').replace(/"/g,'')}" aria-label="Your name"><div class="btns"><button class="b y" id="nmOk" type="button">SAVE</button></div>`);
