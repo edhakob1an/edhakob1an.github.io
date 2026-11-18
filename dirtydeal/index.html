@@ -33,8 +33,10 @@ body{margin:0;-webkit-text-size-adjust:100%;overscroll-behavior:none;position:fi
 html,body{height:100%}
 body{background:var(--ink);color:var(--paper);font-family:var(--body);overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 img{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
-.wrap{height:100%;display:grid;place-items:center;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.stage{position:relative;height:100%;max-height:calc((100vw - 32px)*1376/768);aspect-ratio:768/1376;max-width:100%;container-type:size;overflow:hidden;
+body::before{content:"";position:fixed;inset:-60px;z-index:-1;background:var(--bgimg,none) center/cover no-repeat;filter:blur(22px) brightness(.3) saturate(.75);transition:background-image .4s}
+#fade{position:absolute;inset:0;z-index:58;background:#000;pointer-events:none;opacity:0}
+.wrap{height:100%;display:grid;place-items:center;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+.stage{position:relative;height:100%;max-height:calc(100vw*1376/768);aspect-ratio:768/1376;max-width:100%;container-type:size;overflow:hidden;
   background:#0d0b09;image-rendering:pixelated;--tilt:38deg;--r1w:18%;--r1t:35%;--r1a:20.8%;--r1b:41%;--r1c:61.2%;--r0w:21.5%;--r0t:47.5%;--r0a:13.9%;--r0b:39.25%;--r0c:64.6%}
 #bg{position:absolute;z-index:0;left:0;width:100%;top:0;height:100%;background:url(assets/table.jpg) center/100% 100% no-repeat}
 #bg::after{content:"";position:absolute;left:0;right:0;top:100%;height:12%;background:linear-gradient(#0d0b09,#0d0b09)}
@@ -454,7 +456,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 .b img{width:4.6cqw}
 .b.y{background:#f0b92c;color:#2a1d00;text-shadow:none}.b.g{background:#4f9a32}.b.r{background:#b8321f}.b.p{background:#7c4fb0}
 .b:disabled{filter:grayscale(.85) brightness(.55);cursor:default}
-.loot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3cqw;margin:3cqw 0}
+.loot{display:flex;flex-wrap:wrap;justify-content:center;gap:3cqw;margin:3cqw 0}.loot>div{width:calc(25% - 2.25cqw)}
 .loot>div{position:relative;opacity:0;animation:lootin .45s cubic-bezier(.2,1.4,.4,1) forwards}
 .loot .q{position:absolute;right:-4%;bottom:-4%;font-family:var(--display);font-weight:700;font-size:3.4cqw;color:#fff;background:#3c7a24;border:2px solid #000;padding:0 1cqw}
 @keyframes lootin{from{opacity:0;transform:translateY(30%) scale(.5)}to{opacity:1;transform:none}}
@@ -542,7 +544,7 @@ button{font-family:var(--display);cursor:pointer;background:none;border:0;paddin
 </head>
 <body>
 <div class="wrap">
-<div class="stage a1" id="stage">
+<div class="stage a1" id="stage"><div id="fade"></div>
   <div id="bg"><div id="amb"></div></div>
   <div id="lowhp"></div>
   <img class="abs" id="eicon" src="assets/u_skull.png" alt="">
@@ -698,8 +700,11 @@ let infoT=null;function setInfo(html,quiet){$('infotext').innerHTML=html;if(quie
 /* dealer moods: 0 idle, 1 laugh, 2 angry, 3 shocked */
 let moodT=null;
 let DPRE='dealer';
-function mood(m,ms){const el=$('dealer');el.src=`assets/${DPRE}${m}.png`;el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),200);
-  clearTimeout(moodT);if(ms)moodT=setTimeout(()=>{el.src=`assets/${DPRE}0.png`},ms)}
+/* some mood sprites were drawn closer to the camera: scale/shift them so the body always ends behind the far rail */
+const DFIX={dealer1:[.78,-12],dealer2:[.8,-12],dealer3:[.77,-12]};
+function dealerImg(m){const el=$('dealer'),k=DPRE+m,f=DFIX[k];el.src=`assets/${k}.png`;el.style.scale=f?String(f[0]):'';el.style.translate=f?`0 ${f[1]}%`:''}
+function mood(m,ms){const el=$('dealer');dealerImg(m);el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),200);
+  clearTimeout(moodT);if(ms)moodT=setTimeout(()=>dealerImg(0),ms)}
 
 /* smoke puffs */
 document.querySelectorAll('.smoke').forEach(e=>{for(let i=0;i<8;i++){const p=document.createElement('span');const d=3.2+Math.random()*1.6;
@@ -711,17 +716,19 @@ try{const s=JSON.parse(localStorage.getItem('dd-deck')||'null');if(Array.isArray
 if(!deck.length)deck=['gremlin','fingers','ratking','sandwich','grandma','toilet'];
 function mk(id,side){const d=C[id],l=d.token?1:side===0?P.cards[id].l:(S&&S.elvl)||1,st=statsFor(id,l);const o={uid:++uid,id,side,lvl:l,atk:st.atk,hp:st.hp,poison:0,stuck:0,fresh:true,hidden:true};if(side===1&&S&&S.arena===3&&!d.spell)o.hp+=1;return o}
 
-$('again').onclick=()=>{$('endScreen').hidden=true;newMatch()};
-$('edit').onclick=()=>{$('endScreen').hidden=true;openMenu(2)};
+async function fadeTo(fn){const f=$('fade');await f.animate([{opacity:0},{opacity:1}],{duration:170,fill:'forwards'}).finished.catch(()=>{});fn();await sleepRaw(60);f.animate([{opacity:1},{opacity:0}],{duration:280,fill:'forwards'})}
+const sleepRaw=ms=>new Promise(r=>setTimeout(r,ms));
+$('again').onclick=()=>fadeTo(()=>{$('endScreen').hidden=true;newMatch()});
+$('edit').onclick=()=>fadeTo(()=>{$('endScreen').hidden=true;openMenu(2)});
 
 /* ---------- profile ---------- */
 const ARENAS=[
  {t:0,n:'THE BACK ROOM',who:'The Dealer',pre:'dealer',bg:'table.jpg',tw:'',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:12.6,dh:23.8,gl:[22.1,13.8]}},
- {t:100,n:'THE DRAIN',who:'The Croc',pre:'d2_',bg:'table2.jpg',tw:'Poison lasts 1 turn longer down here.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:12.4,dh:23.8,gl:[14,24]}},
- {t:250,n:'THE DEBT CELLAR',who:'The Collector',pre:'d3_',bg:'table3.jpg',tw:'The light shorts out: a random card may take 3.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:11.6,dh:24.6,gl:[50,8]}},
+ {t:100,n:'THE DRAIN',who:'The Croc',pre:'d2_',bg:'table2.jpg',tw:'Poison lasts 1 turn longer down here.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:9.5,dh:23.8,gl:[14,24]}},
+ {t:250,n:'THE DEBT CELLAR',who:'The Collector',pre:'d3_',bg:'table3.jpg',tw:'The light shorts out: a random card may take 3.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:8.65,dh:24.6,gl:[50,8]}},
  {t:500,n:'THE PRIVATE WARD',who:'The Owner',pre:'d4_',bg:'table4.jpg',tw:"The Owner's cards start with +1 shield.",g:{tilt:44,shift:0,r1w:14,r1t:39.4,r1:[27.9,43,58.1],r0w:18,r0t:50.2,r0:[21.2,41,60.8],dt:16.4,dh:22,gl:[51,24]}},
- {t:750,n:'THE SLAUGHTERHOUSE',who:'The Butcher',pre:'d5_',bg:'table5.jpg',tw:'Every card that dies deals 1 damage to its owner.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:10.6,dh:26,gl:[50,7]}},
- {t:1000,n:'THE FUNHOUSE',who:'The Ringmaster',pre:'d6_',bg:'table6.jpg',tw:'Your cards get shuffled into random slots every round.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:11.2,dh:25.4,gl:[50,6]}}];
+ {t:750,n:'THE SLAUGHTERHOUSE',who:'The Butcher',pre:'d5_',bg:'table5.jpg',tw:'Every card that dies deals 1 damage to its owner.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:9.5,dh:26,gl:[50,7]}},
+ {t:1000,n:'THE FUNHOUSE',who:'The Ringmaster',pre:'d6_',bg:'table6.jpg',tw:'Your cards get shuffled into random slots every round.',g:{tilt:38,shift:0,r1w:18,r1t:35,r1:[20.8,41,61.2],r0w:21.5,r0t:47.5,r0:[13.9,39.25,64.6],dt:9.95,dh:25.4,gl:[50,6]}}];
 let TILT=38;
 function applyArena(k){
   const A=ARENAS[k],g=A.g,st=$('stage');
@@ -733,7 +740,7 @@ function applyArena(k){
   const dw=$('dealerWrap');dw.style.top=g.dt+'%';dw.style.height=g.dh+'%';$('say').style.top=(g.dt-1.5)+'%';
   const gl=$('glow');gl.style.left=g.gl[0]+'%';gl.style.top=g.gl[1]+'%';
   $('flick').style.background=`radial-gradient(ellipse at ${g.gl[0]}% ${g.gl[1]}%,rgba(0,0,0,.2),rgba(0,0,0,.55))`;
-  DPRE=A.pre;$('dealer').src=`assets/${DPRE}0.png`;
+  DPRE=A.pre;dealerImg(0);if($('menu').hidden)setBg(A.bg);
   AMB.set(k);
 }
 const UP={1:{n:2,g:50},2:{n:4,g:150},3:{n:10,g:400},4:{n:20,g:1000}};
@@ -891,7 +898,9 @@ function arenaPop(k){const A=ARENAS[k],cards=ALL.filter(id=>C[id].u===k);SND.sfx
   pop(`<h3>NEW ARENA UNLOCKED</h3><div class="anew"><div class="th" style="background-image:url(assets/${A.bg})"></div><b>${A.n}</b><span>VS ${A.who.toUpperCase()}</span>${A.tw?`<em>${A.tw}</em>`:''}</div>
    ${cards.length?`<p style="text-align:center;margin-top:2cqw">New cards:</p><div class="un anu">${cards.map(id=>cardHTML(id,null,1)).join('')}</div>`:''}<div class="btns"><button class="b y" id="anOk" type="button">ENTER</button></div>`,true);
   $('anOk').onclick=()=>{closePop();setTab(2)}}
-function setTab(t){tab=t;$('track').style.transform=`translateX(${-t*20}%)`;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',+b.dataset.t===t));if(t!==1)endSwap()}
+const BGS=['shop.jpg','deckbg.jpg','alley.jpg','alley.jpg','alley.jpg'];
+const setBg=f=>document.documentElement.style.setProperty('--bgimg',`url(assets/${f})`);
+function setTab(t){tab=t;if(!$('menu').hidden)setBg(BGS[t]);$('track').style.transform=`translateX(${-t*20}%)`;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',+b.dataset.t===t));if(t!==1)endSwap()}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(+b.dataset.t));
 (function(){let sx=0,sy=0,on=false;const tr=$('track');
   tr.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;on=true});
@@ -980,7 +989,7 @@ function openCase(i){
    <div class="btns"><button class="b y" id="cOk" type="button">COLLECT</button></div>`,true);
   $('cOk').onclick=()=>{closePop();renderMenu()};
 }
-$('battleBtn').onclick=()=>{if(P.sel>P.best)return;closePop();$('menu').hidden=true;newMatch()};
+$('battleBtn').onclick=()=>{if(P.sel>P.best)return;closePop();fadeTo(()=>{$('menu').hidden=true;setBg(ARENAS[P.sel].bg);newMatch()})};
 let lvlTaps=0;$('pLvl').onclick=()=>{if(++lvlTaps>=5){lvlTaps=0;P.trophies+=100;const b=P.best;P.best=Math.max(P.best,arenaOf(P.trophies));if(P.best>b)P.sel=P.best;saveP();toast('TEST: +100 TROPHIES');renderMenu()}};
 
 /* ---------- cards tab ---------- */
@@ -1201,7 +1210,7 @@ const AMB=(()=>{
     const gl=$('glow');gl.classList.toggle('sway',k===2);
     if(k===0){flies(22.5,13.5,2,14);
       every(15000,ratRun,9000)}
-    if(k===1){el('eyes',51,12.6);const e2=el('eyes e2',57,14);e2.style.width='1.4%';
+    if(k===1){el('eyes',51,9.8);const e2=el('eyes e2',57,11.1);e2.style.width='1.4%';
       const L=el('lamp',7,-3,'<img src="assets/lamp2.png" alt=""><i></i>');
       flies(55,10,3,12,$('dealerWrap'));
       const src=[[38,10,30.5],[63,10,30],[93,14,37.5],[3,20,36]];
@@ -1785,7 +1794,7 @@ function drawPause(){
 }
 function quitMatch(){
   S.dead=true;PAUSED=false;$('pauseScr').hidden=true;$('intro').hidden=true;$('say').classList.remove('on');$('tip').hidden=true;introTok++;
-  document.getAnimations().forEach(a=>{try{a.cancel()}catch(_){}});
+  document.getAnimations().forEach(a=>{if(window.CSSAnimation&&a instanceof CSSAnimation||window.CSSTransition&&a instanceof CSSTransition||a.effect&&a.effect.target&&a.effect.target.id==='fade')return;try{a.cancel()}catch(_){}});
   document.querySelectorAll('.fly,.flt,.vfx,.dust').forEach(e=>e.remove());$('croupier').hidden=true;
   P.trophies=Math.max(0,P.trophies-15);addXP(2);saveP();
   S.phase='idle';openMenu(2);setTimeout(()=>toast('YOU WALKED AWAY · -15 TROPHIES'),200);
